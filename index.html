@@ -535,14 +535,15 @@
     function resolveClient() {
       const params = new URLSearchParams(window.location.search);
       
-      // 1. Check query parameter
+      // 1. Check query parameter (?c=slug or ?client=slug)
       let slug = params.get('c') || params.get('client') || '';
 
-      // 2. Check path slug
+      // 2. Check path slug (/alexander or /maria or subpaths)
       if (!slug) {
-        const pathSlug = window.location.pathname.replace(/^\/|\/$/g, '').toLowerCase();
-        if (pathSlug && pathSlug !== 'index.html' && pathSlug !== 'index') {
-          slug = pathSlug;
+        const segments = window.location.pathname.split('/').filter(s => s && s.toLowerCase() !== 'index.html' && s.toLowerCase() !== 'index');
+        const lastSegment = segments.length > 0 ? segments[segments.length - 1].toLowerCase() : '';
+        if (lastSegment && !lastSegment.includes(':') && !lastSegment.endsWith('.html')) {
+          slug = lastSegment;
         }
       }
 
@@ -682,9 +683,10 @@
       const params = new URLSearchParams(window.location.search);
       let querySlug = params.get('c') || params.get('client') || '';
       if (!querySlug) {
-        const pathSlug = window.location.pathname.replace(/^\/|\/$/g, '').toLowerCase();
-        if (pathSlug && pathSlug !== 'index.html' && pathSlug !== 'index') {
-          querySlug = pathSlug;
+        const segments = window.location.pathname.split('/').filter(s => s && s.toLowerCase() !== 'index.html' && s.toLowerCase() !== 'index');
+        const lastSegment = segments.length > 0 ? segments[segments.length - 1].toLowerCase() : '';
+        if (lastSegment && !lastSegment.includes(':') && !lastSegment.endsWith('.html')) {
+          querySlug = lastSegment;
         }
       }
       if (!querySlug) return;

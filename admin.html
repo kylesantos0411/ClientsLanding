@@ -823,7 +823,7 @@ create policy "Public delete" on clients for delete using (true);</pre>
       return localStorage.getItem("tag_admin_pass") || "tapandgo2026";
     }
 
-    function checkAuth() {
+    async function checkAuth() {
       const isAuthed = sessionStorage.getItem("tag_admin_session") === "true";
       const authScreen = document.getElementById("authScreen");
       const dashboardScreen = document.getElementById("dashboardScreen");
@@ -832,10 +832,10 @@ create policy "Public delete" on clients for delete using (true);</pre>
         authScreen.classList.add("hidden");
         dashboardScreen.classList.remove("hidden");
         loadCloudConfigIntoInputs();
-        fetchClientsFromCloud();
         renderClientsList();
         updateCodeExport();
         lucide.createIcons();
+        await fetchClientsFromCloud();
       } else {
         authScreen.classList.remove("hidden");
         dashboardScreen.classList.add("hidden");
@@ -843,8 +843,7 @@ create policy "Public delete" on clients for delete using (true);</pre>
     }
 
     async function fetchClientsFromCloud() {
-      const url = (typeof CLOUD_SYNC !== 'undefined' && CLOUD_SYNC.supabaseUrl) ? CLOUD_SYNC.supabaseUrl : (localStorage.getItem("tag_supabase_url") || "");
-      const key = (typeof CLOUD_SYNC !== 'undefined' && CLOUD_SYNC.supabaseKey) ? CLOUD_SYNC.supabaseKey : (localStorage.getItem("tag_supabase_key") || "");
+      const { url, key } = getCloudCredentials();
       if (!url || !key) return;
 
       try {
@@ -929,6 +928,10 @@ create policy "Public delete" on clients for delete using (true);</pre>
           clientsData = { ...SEED_CLIENTS };
         }
       } else {
+        clientsData = { ...SEED_CLIENTS };
+        saveClientsData();
+      }
+      if (!clientsData || Object.keys(clientsData).length === 0) {
         clientsData = { ...SEED_CLIENTS };
         saveClientsData();
       }
