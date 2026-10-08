@@ -137,11 +137,13 @@
       
       <!-- Central Avatar with Metallic Bevel Ring -->
       <div class="relative mb-5">
-        <div class="avatar-bevel-ring w-32 h-32 rounded-full flex items-center justify-center">
+        <div class="avatar-bevel-ring w-32 h-32 rounded-full flex items-center justify-center overflow-hidden">
           <!-- Inner Black Circle with Monogram -->
           <div id="avatarInitials" class="w-full h-full rounded-full bg-dark text-white flex items-center justify-center font-bold text-3xl tracking-wide shadow-inner">
             KS
           </div>
+          <!-- Optional Photo Avatar -->
+          <img id="avatarPhoto" src="" alt="Profile" class="hidden w-full h-full rounded-full object-cover shadow-inner" />
         </div>
       </div>
 
@@ -216,8 +218,8 @@
     <section id="appointment" class="px-7 py-7">
       <div class="text-center mb-5">
         <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-slate-400 block">Schedule a Meet</span>
-        <h2 class="text-xl font-extrabold text-dark tracking-tight">Request an Appointment</h2>
-        <p class="text-xs text-slate-500 mt-1 max-w-[320px] mx-auto">
+        <h2 id="appointmentHeading" class="text-xl font-extrabold text-dark tracking-tight">Request an Appointment</h2>
+        <p id="appointmentDesc" class="text-xs text-slate-500 mt-1 max-w-[320px] mx-auto">
           Looking to have a meeting with Kyle? Fill out your details below and we will confirm the schedule.
         </p>
       </div>
@@ -449,24 +451,212 @@
 
 
   <!-- ========================================== -->
-  <!-- CLIENT JAVASCRIPT & CONFIGURATION          -->
+  <!-- MULTI-CLIENT JAVASCRIPT & CONFIG REGISTRY  -->
   <!-- ========================================== -->
   <script>
-    // ----------------------------------------------------
-    // SINGLE CLIENT CONFIGURATION
-    // (Easily edit this client's info right here)
-    // ----------------------------------------------------
-    const CONFIG = {
-      fullName: "Kyle Santos",
-      initials: "KS",
-      title: "Business Owner • Executive",
-      bio: "Connect directly with Kyle Santos for appointments, business inquiries, and partnerships.",
-      phone: "+639194850794",
-      rawPhone: "09194850794",
-      email: "kylesantos0411@gmail.com",
-      facebook: "https://www.facebook.com/share/1C7PU3sCpu/?mibextid=wwXIfr",
-      instagram: "https://www.instagram.com/kaiipuccino"
+    // -------------------------------------------------------------------------
+    // CLIENTS REGISTRY ("ONE FOR ALL" SYSTEM)
+    // Add your clients here! When they visit yourdomain.com/slug or ?c=slug,
+    // their profile, contact details, and appointment email load automatically.
+    // -------------------------------------------------------------------------
+    const CLIENTS = {
+      // 1. DEFAULT PROFILE (Kyle Santos)
+      "default": {
+        slug: "default",
+        fullName: "Kyle Santos",
+        initials: "KS",
+        title: "Business Owner • Executive",
+        bio: "Connect directly with Kyle Santos for appointments, business inquiries, and partnerships.",
+        phone: "+639194850794",
+        email: "kylesantos0411@gmail.com",
+        facebook: "https://www.facebook.com/share/1C7PU3sCpu/?mibextid=wwXIfr",
+        instagram: "https://www.instagram.com/kaiipuccino",
+        photoUrl: "" // Optional photo URL (leave empty to show monogram)
+      },
+
+      // 2. SAMPLE CLIENT 1: Doctor / Dentist
+      "alexander": {
+        slug: "alexander",
+        fullName: "Dr. Alexander Reyes",
+        initials: "AR",
+        title: "Dental Surgeon & Clinic Director",
+        bio: "Private consultation and appointment booking for smile design and advanced dental care.",
+        phone: "+639171234567",
+        email: "reyesdental@gmail.com",
+        facebook: "https://facebook.com",
+        instagram: "https://instagram.com",
+        photoUrl: ""
+      },
+
+      // 3. SAMPLE CLIENT 2: Lawyer / Attorney
+      "maria": {
+        slug: "maria",
+        fullName: "Atty. Maria Santos",
+        initials: "MS",
+        title: "Managing Legal Partner",
+        bio: "Schedule an advisory meeting or corporate legal consultation.",
+        phone: "+639189876543",
+        email: "santoslegal@gmail.com",
+        facebook: "https://facebook.com",
+        instagram: "",
+        photoUrl: ""
+      }
+
+      // To add another client, just copy-paste:
+      // "clientname": {
+      //   slug: "clientname",
+      //   fullName: "Full Name",
+      //   initials: "FN",
+      //   title: "Professional Title",
+      //   bio: "Bio...",
+      //   phone: "+63...",
+      //   email: "client@gmail.com",
+      //   facebook: "",
+      //   instagram: "",
+      //   photoUrl: ""
+      // }
     };
+
+    // -------------------------------------------------------------------------
+    // RESOLVE ACTIVE CLIENT FROM URL
+    // Supports:
+    // 1. ?c=slug or ?client=slug (e.g. ?c=alexander)
+    // 2. Clean Path /slug (e.g. /alexander or /maria)
+    // 3. Dynamic URL query overrides (?name=John+Doe&email=john@...)
+    // -------------------------------------------------------------------------
+    function resolveClient() {
+      const params = new URLSearchParams(window.location.search);
+      
+      // 1. Check query parameter
+      let slug = params.get('c') || params.get('client') || '';
+
+      // 2. Check path slug
+      if (!slug) {
+        const pathSlug = window.location.pathname.replace(/^\/|\/$/g, '').toLowerCase();
+        if (pathSlug && pathSlug !== 'index.html' && pathSlug !== 'index') {
+          slug = pathSlug;
+        }
+      }
+
+      slug = (slug || 'default').toLowerCase();
+
+      // Retrieve registered client or fallback to default
+      const base = CLIENTS[slug] || CLIENTS['default'];
+
+      // Allow on-the-fly URL parameter overrides for instant client preview
+      return {
+        slug: slug,
+        fullName: params.get('name') || base.fullName,
+        initials: params.get('initials') || base.initials || (base.fullName ? base.fullName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'KS'),
+        title: params.get('title') || base.title,
+        bio: params.get('bio') || base.bio,
+        phone: params.get('phone') || base.phone,
+        email: params.get('email') || base.email,
+        facebook: params.has('fb') ? params.get('fb') : base.facebook,
+        instagram: params.has('ig') ? params.get('ig') : base.instagram,
+        photoUrl: params.get('photo') || base.photoUrl || ''
+      };
+    }
+
+    // Active client instance
+    const activeClient = resolveClient();
+
+    // -------------------------------------------------------------------------
+    // RENDER CLIENT TO DOM
+    // -------------------------------------------------------------------------
+    function renderClientProfile(client) {
+      // 1. Document title & meta
+      document.title = `${client.fullName} — Schedule an Appointment`;
+
+      // 2. Header
+      const headerInitials = document.getElementById("headerInitials");
+      if (headerInitials) headerInitials.textContent = client.initials;
+
+      // 3. Avatar (Photo or Monogram)
+      const avatarInitials = document.getElementById("avatarInitials");
+      const avatarPhoto = document.getElementById("avatarPhoto");
+      if (client.photoUrl && avatarPhoto) {
+        avatarPhoto.src = client.photoUrl;
+        avatarPhoto.classList.remove("hidden");
+        if (avatarInitials) avatarInitials.classList.add("hidden");
+      } else {
+        if (avatarPhoto) avatarPhoto.classList.add("hidden");
+        if (avatarInitials) {
+          avatarInitials.textContent = client.initials;
+          avatarInitials.classList.remove("hidden");
+        }
+      }
+
+      // 4. Hero text
+      const nameEl = document.getElementById("clientName");
+      if (nameEl) nameEl.textContent = client.fullName;
+
+      const titleEl = document.getElementById("clientTitle");
+      if (titleEl) titleEl.textContent = client.title;
+
+      const bioEl = document.getElementById("clientBio");
+      if (bioEl) bioEl.textContent = client.bio;
+
+      // 5. Action Buttons (Phone, SMS, Email, Viber)
+      const cleanPhone = client.phone.replace(/[^0-9+]/g, '');
+      const btnCall = document.getElementById("btnCall");
+      if (btnCall) btnCall.href = `tel:${cleanPhone}`;
+
+      const btnSms = document.getElementById("btnSms");
+      if (btnSms) btnSms.href = `sms:${cleanPhone}`;
+
+      const btnEmail = document.getElementById("btnEmail");
+      if (btnEmail) btnEmail.href = `mailto:${client.email}`;
+
+      const btnViber = document.getElementById("btnViber");
+      if (btnViber) btnViber.href = `viber://chat?number=${encodeURIComponent(cleanPhone)}`;
+
+      // 6. Appointment Heading & Description
+      const apptDesc = document.getElementById("appointmentDesc");
+      if (apptDesc) {
+        apptDesc.textContent = `Looking to have a meeting with ${client.fullName}? Fill out your details below and we will confirm the schedule.`;
+      }
+
+      // 7. Social channels (show only if available)
+      const fbEl = document.getElementById("linkFacebook");
+      if (fbEl) {
+        if (client.facebook) {
+          fbEl.href = client.facebook;
+          fbEl.classList.remove("hidden");
+        } else {
+          fbEl.classList.add("hidden");
+        }
+      }
+
+      const igEl = document.getElementById("linkInstagram");
+      if (igEl) {
+        if (client.instagram) {
+          igEl.href = client.instagram;
+          igEl.classList.remove("hidden");
+        } else {
+          igEl.classList.add("hidden");
+        }
+      }
+
+      // 8. Drawer & Footer
+      const drawerInitials = document.getElementById("drawerInitials");
+      if (drawerInitials) drawerInitials.textContent = client.initials;
+
+      const drawerName = document.getElementById("drawerName");
+      if (drawerName) drawerName.textContent = client.fullName;
+
+      const footerInitials = document.getElementById("footerInitials");
+      if (footerInitials) footerInitials.textContent = client.initials;
+
+      const footerName = document.getElementById("footerName");
+      if (footerName) footerName.textContent = client.fullName;
+
+      const footerCopyright = document.getElementById("footerCopyright");
+      if (footerCopyright) footerCopyright.textContent = client.fullName;
+    }
+
+    // Run dynamic render
+    renderClientProfile(activeClient);
 
     // Auto-update copyright year
     document.getElementById("year").textContent = new Date().getFullYear();
@@ -479,8 +669,8 @@
     // ----------------------------------------------------
     async function shareProfile() {
       const shareData = {
-        title: `${CONFIG.fullName}`,
-        text: `Appointment and contact page for ${CONFIG.fullName}`,
+        title: `${activeClient.fullName}`,
+        text: `Appointment and contact page for ${activeClient.fullName}`,
         url: window.location.href
       };
 
@@ -502,7 +692,7 @@
     }
 
     // ----------------------------------------------------
-    // QR CODE MODAL
+    // QR CODE MODAL (Reflects Active Client URL)
     // ----------------------------------------------------
     let qrRendered = false;
     function openQrModal() {
@@ -557,6 +747,7 @@
 
     // ----------------------------------------------------
     // APPOINTMENT REQUEST DISPATCH (Direct Free Email)
+    // Delivers directly to activeClient.email!
     // ----------------------------------------------------
     async function handleAppointment(e) {
       e.preventDefault();
@@ -575,7 +766,7 @@
       const payload = {
         _subject: `New Appointment Request from ${name}`,
         _template: "table",
-        "Client / Recipient": CONFIG.fullName,
+        "Recipient Client": activeClient.fullName,
         "Visitor Name": name,
         "Contact Info": contact,
         "Requested Date & Time": dateTime,
@@ -584,7 +775,7 @@
       };
 
       try {
-        const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(CONFIG.email)}`, {
+        const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(activeClient.email)}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -596,7 +787,6 @@
         const result = await response.json();
 
         if (response.ok && result.success !== "false") {
-          // Show success state
           document.getElementById("appointmentForm").classList.add("hidden");
           const successView = document.getElementById("appointmentSuccess");
           successView.classList.remove("hidden");
@@ -604,11 +794,9 @@
           lucide.createIcons();
           showToast("Appointment request sent successfully!");
         } else {
-          // Fallback to mailto if FormSubmit needs confirmation or was blocked
           fallbackToMailto(name, contact, dateTime, purpose);
         }
       } catch (err) {
-        // Fallback to mailto if network error or adblock
         fallbackToMailto(name, contact, dateTime, purpose);
       } finally {
         submitBtn.disabled = false;
@@ -620,14 +808,14 @@
     function fallbackToMailto(name, contact, dateTime, purpose) {
       const subject = encodeURIComponent(`Appointment Request: Meeting with ${name}`);
       const body = encodeURIComponent(
-        `Hello ${CONFIG.fullName},\n\nI would like to request an appointment to meet with you.\n\n` +
+        `Hello ${activeClient.fullName},\n\nI would like to request an appointment to meet with you.\n\n` +
         `• Name: ${name}\n` +
         `• Contact Info: ${contact}\n` +
         `• Preferred Schedule: ${dateTime}\n` +
         `• Purpose / Agenda:\n${purpose}\n\n` +
         `Looking forward to hearing from you.\n\nBest regards,\n${name}`
       );
-      window.location.href = `mailto:${CONFIG.email}?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:${activeClient.email}?subject=${subject}&body=${body}`;
       showToast("Opening email draft to complete send...");
     }
 
