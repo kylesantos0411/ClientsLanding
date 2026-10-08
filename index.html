@@ -350,7 +350,7 @@
       </div>
 
       <p class="text-[10px] text-slate-400">
-        &copy; <span id="year"></span> <span id="footerCopyright">Kyle Santos</span>. All Rights Reserved.
+        &copy; <span id="year"></span> <span id="footerCopyright">Kyle Santos</span>. All Rights Reserved. &bull; <a href="/admin" class="hover:text-slate-600 transition" title="Client Hub Admin">Admin Portal</a>
       </p>
     </footer>
 
@@ -540,8 +540,15 @@
 
       slug = (slug || 'default').toLowerCase();
 
-      // Retrieve registered client or fallback to default
-      const base = CLIENTS[slug] || CLIENTS['default'];
+      // Retrieve registered client from local storage cache if available
+      let localRegistry = {};
+      try {
+        const cached = localStorage.getItem("tag_clients_registry");
+        if (cached) localRegistry = JSON.parse(cached);
+      } catch (e) {}
+
+      const allClients = { ...CLIENTS, ...localRegistry };
+      const base = allClients[slug] || allClients['default'] || CLIENTS['default'];
 
       // Allow on-the-fly URL parameter overrides for instant client preview
       return {
@@ -559,7 +566,7 @@
     }
 
     // Active client instance
-    const activeClient = resolveClient();
+    let activeClient = resolveClient();
 
     // -------------------------------------------------------------------------
     // RENDER CLIENT TO DOM
@@ -657,6 +664,54 @@
 
     // Run dynamic render
     renderClientProfile(activeClient);
+
+    // Asynchronous Cloud Check (Supabase) if configured
+    async function checkCloudProfile() {
+      const sbUrl = localStorage.getItem("tag_supabase_url") || window.SUPABASE_URL;
+      const sbKey = localStorage.getItem("tag_supabase_key") || window.SUPABASE_KEY;
+      if (!sbUrl || !sbKey) return;
+
+      const params = new URLSearchParams(window.location.search);
+      let querySlug = params.get('c') || params.get('client') || '';
+      if (!querySlug) {
+        const pathSlug = window.location.pathname.replace(/^\/|\/$/g, '').toLowerCase();
+        if (pathSlug && pathSlug !== 'index.html' && pathSlug !== 'index') {
+          querySlug = pathSlug;
+        }
+      }
+      if (!querySlug) return;
+
+      try {
+        const res = await fetch(`${sbUrl}/rest/v1/clients?slug=eq.${encodeURIComponent(querySlug.toLowerCase())}&select=*`, {
+          headers: {
+            "apikey": sbKey,
+            "Authorization": `Bearer ${sbKey}`
+          }
+        });
+        if (res.ok) {
+          const rows = await res.json();
+          if (rows && rows.length > 0) {
+            const row = rows[0];
+            activeClient = {
+              slug: row.slug,
+              fullName: row.full_name,
+              initials: row.initials || (row.full_name ? row.full_name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'KS'),
+              title: row.title,
+              bio: row.bio,
+              phone: row.phone,
+              email: row.email,
+              facebook: row.facebook || '',
+              instagram: row.instagram || '',
+              photoUrl: row.photo_url || ''
+            };
+            renderClientProfile(activeClient);
+          }
+        }
+      } catch (err) {
+        // Fallback already rendered
+      }
+    }
+    checkCloudProfile();
 
     // Auto-update copyright year
     document.getElementById("year").textContent = new Date().getFullYear();

@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Hub — TapAndGo Client Management</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #F5F3EF;
+      color: #1C1E21;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #F5F3EF;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #D1CDC7;
+      border-radius: 4px;
+    }
+    .bevel-ring {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06), inset 0 0 0 1px rgba(255,255,255,0.8), inset 0 2px 4px rgba(0,0,0,0.04);
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased flex flex-col selection:bg-slate-200">
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed top-5 right-5 z-50 bg-[#1C1E21] text-white px-5 py-3 rounded-xl shadow-2xl text-sm font-medium flex items-center gap-3 transform -translate-y-16 opacity-0 transition-all duration-300 pointer-events-none">
+    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+    <span id="toastMsg">Action completed successfully</span>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 1. AUTHENTICATION LOCK SCREEN (Shown when logged out)                     -->
+  <!-- ========================================================================= -->
+  <div id="authScreen" class="flex-1 flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white rounded-3xl p-8 md:p-10 shadow-xl border border-[#E5E2DC] relative overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-slate-700 via-slate-900 to-slate-700"></div>
+
+      <!-- Icon & Title -->
+      <div class="flex flex-col items-center text-center mb-8">
+        <div class="w-16 h-16 rounded-2xl bg-[#F5F3EF] border border-[#E5E2DC] flex items-center justify-center mb-4 text-[#1C1E21] shadow-inner">
+          <i data-lucide="shield-check" class="w-8 h-8"></i>
+        </div>
+        <h1 class="text-2xl font-bold tracking-tight text-[#1C1E21]">Client Portal Admin</h1>
+        <p class="text-xs text-[#71717A] mt-1.5">Enter your master security password to manage client NFC profiles</p>
+      </div>
+
+      <!-- Password Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-[#52525B] mb-2">Master Password</label>
+          <div class="relative">
+            <input 
+              type="password" 
+              id="passwordInput" 
+              placeholder="••••••••••••" 
+              required
+              class="w-full px-4 py-3.5 pr-12 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-[#1C1E21] text-sm focus:outline-none focus:ring-2 focus:ring-slate-800 transition"
+            >
+            <button 
+              type="button" 
+              onclick="togglePasswordVisibility()" 
+              class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+              title="Show password"
+            >
+              <i id="eyeIcon" data-lucide="eye" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <p id="loginError" class="text-rose-500 text-xs mt-2 hidden flex items-center gap-1.5">
+            <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i>
+            <span>Incorrect password. Please try again.</span>
+          </p>
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full py-3.5 px-4 rounded-xl bg-[#1C1E21] hover:bg-black text-white text-sm font-semibold tracking-wide flex items-center justify-center gap-2 transition shadow-md active:scale-[0.99]"
+        >
+          <i data-lucide="unlock" class="w-4 h-4"></i>
+          <span>Unlock Dashboard</span>
+        </button>
+
+        <div class="text-center pt-2">
+          <p class="text-[11px] text-slate-400">Default security password: <span class="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">tapandgo2026</span></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 2. MAIN DASHBOARD (Shown when logged in)                                  -->
+  <!-- ========================================================================= -->
+  <div id="dashboardScreen" class="hidden flex-1 flex flex-col">
+    <!-- Top Navigation Bar -->
+    <header class="bg-white border-b border-[#E5E2DC] sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[#1C1E21] text-white flex items-center justify-center font-bold text-sm tracking-wider shadow-sm">
+            TG
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-sm tracking-tight text-[#1C1E21]">TapAndGo</span>
+              <span class="text-[10px] font-semibold uppercase tracking-wider bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full border border-slate-200">Admin Hub</span>
+            </div>
+            <p class="text-[11px] text-[#71717A]">Multi-Client NFC Portal System</p>
+          </div>
+        </div>
+
+        <!-- Right Quick Actions -->
+        <div class="flex items-center gap-2.5">
+          <a 
+            href="/" 
+            target="_blank" 
+            class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E5E2DC] text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-[#FAF9F6] transition"
+          >
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span>Preview Default</span>
+          </a>
+
+          <button 
+            onclick="openPasswordModal()" 
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E5E2DC] text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-[#FAF9F6] transition"
+          >
+            <i data-lucide="key" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Password</span>
+          </button>
+
+          <button 
+            onclick="handleLogout()" 
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-xs font-semibold transition"
+          >
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span>Log Out</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-6">
+
+      <!-- Top Summary Metrics Banner -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-[#E5E2DC] shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Registered Clients</p>
+            <p id="metricClientCount" class="text-2xl font-bold text-[#1C1E21] mt-1">0</p>
+          </div>
+          <div class="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700">
+            <i data-lucide="users" class="w-5 h-5"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-[#E5E2DC] shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Live Routing</p>
+            <p class="text-xs font-bold text-emerald-600 mt-1 flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Active (/:slug & ?c=)
+            </p>
+          </div>
+          <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+            <i data-lucide="zap" class="w-5 h-5"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-[#E5E2DC] shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Email System</p>
+            <p class="text-xs font-semibold text-slate-700 mt-1">Direct to Client's Inbox</p>
+          </div>
+          <div class="w-11 h-11 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
+            <i data-lucide="mail-check" class="w-5 h-5"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="flex items-center gap-2 border-b border-[#E5E2DC] pb-2 overflow-x-auto custom-scrollbar">
+        <button 
+          id="tabBtnList" 
+          onclick="switchTab('list')" 
+          class="px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 bg-[#1C1E21] text-white shadow-sm"
+        >
+          <i data-lucide="users" class="w-4 h-4"></i>
+          <span>Client Directory</span>
+        </button>
+
+        <button 
+          id="tabBtnAdd" 
+          onclick="switchTab('add')" 
+          class="px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-[#E5E2DC]"
+        >
+          <i data-lucide="user-plus" class="w-4 h-4"></i>
+          <span id="tabAddTitle">Add New Client</span>
+        </button>
+
+        <button 
+          id="tabBtnCloud" 
+          onclick="switchTab('cloud')" 
+          class="px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-[#E5E2DC]"
+        >
+          <i data-lucide="database" class="w-4 h-4"></i>
+          <span>Cloud Database (Free)</span>
+        </button>
+
+        <button 
+          id="tabBtnExport" 
+          onclick="switchTab('export')" 
+          class="px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-[#E5E2DC]"
+        >
+          <i data-lucide="code" class="w-4 h-4"></i>
+          <span>Export & Code Backup</span>
+        </button>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- TAB 1: CLIENTS DIRECTORY                                            -->
+      <!-- =================================================================== -->
+      <section id="tabViewList" class="space-y-4">
+        <!-- Search & Quick Action Bar -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div class="relative w-full sm:w-80">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input 
+              type="text" 
+              id="searchInput" 
+              placeholder="Search clients by name, title, or slug..." 
+              oninput="renderClientsList()" 
+              class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#E5E2DC] text-xs text-[#1C1E21] focus:outline-none focus:ring-2 focus:ring-slate-800"
+            >
+          </div>
+
+          <button 
+            onclick="prepareAddNewClient()" 
+            class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#1C1E21] hover:bg-black text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-sm transition"
+          >
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>Add Client Profile</span>
+          </button>
+        </div>
+
+        <!-- Clients Grid -->
+        <div id="clientsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Client Cards inserted dynamically -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyClientsState" class="hidden bg-white rounded-3xl p-12 text-center border border-[#E5E2DC]">
+          <div class="w-14 h-14 rounded-2xl bg-slate-100 mx-auto flex items-center justify-center text-slate-500 mb-3">
+            <i data-lucide="user-x" class="w-7 h-7"></i>
+          </div>
+          <h3 class="text-base font-bold text-slate-800">No Clients Found</h3>
+          <p class="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-5">There are no client profiles matching your search query. Add your first business client to start writing to NFC cards.</p>
+          <button 
+            onclick="prepareAddNewClient()" 
+            class="px-4 py-2 rounded-xl bg-[#1C1E21] text-white text-xs font-semibold inline-flex items-center gap-2"
+          >
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>Create Client Profile</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 2: ADD / EDIT CLIENT FORM WITH LIVE PREVIEW                     -->
+      <!-- =================================================================== -->
+      <section id="tabViewAdd" class="hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+          <!-- Left Column: Form (7 cols) -->
+          <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E2DC] shadow-sm">
+            <div class="flex items-center justify-between pb-6 border-b border-[#E5E2DC] mb-6">
+              <div>
+                <h2 id="formTitle" class="text-lg font-bold text-[#1C1E21]">Add New Client</h2>
+                <p class="text-xs text-[#71717A] mt-0.5">Fill out client credentials and contact routes</p>
+              </div>
+              <button 
+                type="button" 
+                onclick="resetClientForm()" 
+                class="text-xs text-slate-500 hover:text-slate-800 font-medium flex items-center gap-1"
+              >
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                <span>Reset Form</span>
+              </button>
+            </div>
+
+            <form id="clientForm" onsubmit="handleSaveClient(event)" class="space-y-4">
+              <!-- Slug & Initials -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">
+                    URL Slug / NFC Route <span class="text-rose-500">*</span>
+                  </label>
+                  <div class="relative">
+                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 font-mono">/</span>
+                    <input 
+                      type="text" 
+                      id="inputSlug" 
+                      required 
+                      placeholder="e.g. alexander" 
+                      oninput="updateLivePreview()" 
+                      class="w-full pl-7 pr-3 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-xs font-mono text-[#1C1E21] focus:ring-2 focus:ring-slate-800"
+                    >
+                  </div>
+                  <p class="text-[10px] text-slate-400 mt-1">This forms the NFC URL: <span class="font-mono" id="previewUrlText">yourdomain.com/alexander</span></p>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Monogram Initials</label>
+                  <input 
+                    type="text" 
+                    id="inputInitials" 
+                    maxlength="3" 
+                    placeholder="AV" 
+                    oninput="updateLivePreview()" 
+                    class="w-full px-3 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-xs font-bold text-center uppercase tracking-wider text-[#1C1E21] focus:ring-2 focus:ring-slate-800"
+                  >
+                </div>
+              </div>
+
+              <!-- Full Name -->
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">
+                  Full Name & Title / Honorific <span class="text-rose-500">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="inputFullName" 
+                  required 
+                  placeholder="e.g. Alexander Vance or Dr. Maria Santos" 
+                  oninput="handleNameInput(event)" 
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-xs text-[#1C1E21] focus:ring-2 focus:ring-slate-800"
+                >
+              </div>
+
+              <!-- Title / Position -->
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">
+                  Professional Title / Role <span class="text-rose-500">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="inputTitle" 
+                  required 
+                  placeholder="e.g. President & Principal Architect" 
+                  oninput="updateLivePreview()" 
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-xs text-[#1C1E21] focus:ring-2 focus:ring-slate-800"
+                >
+              </div>
+
+              <!-- Bio / Tagline -->
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">
+                  Company / Short Bio <span class="text-rose-500">*</span>
+                </label>
+                <textarea 
+                  id="inputBio" 
+                  rows="2" 
+                  required 
+                  placeholder="e.g. Architecture & Structural Engineering • Luxury Residential Design" 
+                  oninput="updateLivePreview()" 
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-xs text-[#1C1E21] focus:ring-2 focus:ring-slate-800"
+                ></textarea>
+              </div>
+
+              <!-- Contact Row: Phone & Email -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">
+                    Phone / Mobile Number <span class="text-rose-500">*</span>
+                  </label>
+                  <input 
+                    type="tel" 
+                    id="inputPhone" 
+                    required 
+                    placeholder="+639171234567" 
+                    oninput="updateLivePreview()" 
+                    class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-xs text-[#1C1E21] focus:ring-2 focus:ring-slate-800"
+                  >
+                  <p class="text-[10px] text-slate-400 mt-1">Used for Call, SMS & Viber quick buttons</p>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">
+                    Client's Email Address <span class="text-rose-500">*</span>
+                  </label>
+                  <input 
+                    type="email" 
+                    id="inputEmail" 
+                    required 
+                    placeholder="alexander@vancestudio.com" 
+                    oninput="updateLivePreview()" 
+                    class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-xs text-[#1C1E21] focus:ring-2 focus:ring-slate-800"
+                  >
+                  <p class="text-[10px] text-emerald-600 mt-1">Appointment requests land here directly</p>
+                </div>
+              </div>
+
+              <!-- Social Links -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Facebook Profile/Page URL</label>
+                  <input 
+                    type="url" 
+                    id="inputFacebook" 
+                    placeholder="https://facebook.com/vancestudio" 
+                    oninput="updateLivePreview()" 
+                    class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-xs text-[#1C1E21] focus:ring-2 focus:ring-slate-800"
+                  >
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Instagram Profile URL</label>
+                  <input 
+                    type="url" 
+                    id="inputInstagram" 
+                    placeholder="https://instagram.com/vancestudio" 
+                    oninput="updateLivePreview()" 
+                    class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-xs text-[#1C1E21] focus:ring-2 focus:ring-slate-800"
+                  >
+                </div>
+              </div>
+
+              <!-- Photo URL (Optional) -->
+              <div class="pt-1">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Avatar Photo URL (Optional)</label>
+                <input 
+                  type="url" 
+                  id="inputPhotoUrl" 
+                  placeholder="https://.../photo.jpg (leave blank for silver monogram ring)" 
+                  oninput="updateLivePreview()" 
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-xs text-[#1C1E21] focus:ring-2 focus:ring-slate-800"
+                >
+                <p class="text-[10px] text-slate-400 mt-1">Leave empty to use the luxury silver monogram ring with client initials.</p>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="pt-4 flex items-center gap-3">
+                <button 
+                  type="submit" 
+                  class="flex-1 py-3 px-5 rounded-xl bg-[#1C1E21] hover:bg-black text-white text-xs font-bold tracking-wide flex items-center justify-center gap-2 shadow-md transition active:scale-[0.99]"
+                >
+                  <i data-lucide="check" class="w-4 h-4"></i>
+                  <span id="btnSaveText">Save Client Profile</span>
+                </button>
+
+                <button 
+                  type="button" 
+                  onclick="switchTab('list')" 
+                  class="py-3 px-5 rounded-xl border border-[#E5E2DC] hover:bg-slate-100 text-xs font-semibold text-slate-700 transition"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Right Column: Live Mobile Mockup Preview (5 cols) -->
+          <div class="lg:col-span-5 sticky top-24">
+            <div class="bg-white rounded-3xl p-5 border border-[#E5E2DC] shadow-sm">
+              <div class="flex items-center justify-between pb-3 mb-4 border-b border-[#E5E2DC]">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Live Card Mockup</span>
+                </div>
+                <span class="text-[11px] font-mono text-slate-400">iOS / Android Display</span>
+              </div>
+
+              <!-- Phone Shell Frame -->
+              <div class="mx-auto max-w-[320px] rounded-[32px] p-3 bg-[#E5E2DC] shadow-xl border border-slate-300">
+                <div class="rounded-[24px] bg-[#F5F3EF] p-5 border border-white text-center shadow-inner overflow-hidden">
+
+                  <!-- Header bar -->
+                  <div class="flex items-center justify-between pb-4 mb-2 border-b border-[#E5E2DC]">
+                    <div id="prevHeaderInitials" class="w-7 h-7 rounded-lg bg-[#1C1E21] text-white flex items-center justify-center font-bold text-[10px] tracking-wider">
+                      AV
+                    </div>
+                    <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Contactless Card</span>
+                  </div>
+
+                  <!-- Centered Avatar -->
+                  <div class="my-4 flex justify-center">
+                    <div class="relative w-24 h-24 rounded-full p-1 bg-gradient-to-b from-[#E2E8F0] via-[#CBD5E1] to-[#94A3B8] shadow-md">
+                      <div class="w-full h-full rounded-full bg-gradient-to-b from-[#F8FAFC] to-[#E2E8F0] flex items-center justify-center overflow-hidden border border-white">
+                        <img id="prevAvatarImg" class="w-full h-full object-cover hidden" alt="Avatar">
+                        <span id="prevAvatarInitials" class="font-serif font-bold text-2xl text-[#1E293B] tracking-wider">AV</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Name, Title, Bio -->
+                  <h3 id="prevName" class="text-base font-bold text-[#1C1E21] tracking-tight">Alexander Vance</h3>
+                  <p id="prevTitle" class="text-[11px] font-semibold text-[#52525B] mt-0.5">President & Principal Architect</p>
+                  <p id="prevBio" class="text-[10px] text-[#71717A] mt-1.5 leading-relaxed line-clamp-2">Architecture & Structural Engineering</p>
+
+                  <!-- Quick Action Grid -->
+                  <div class="grid grid-cols-4 gap-2 my-5">
+                    <div class="flex flex-col items-center">
+                      <div class="w-10 h-10 rounded-xl bg-white border border-[#E5E2DC] flex items-center justify-center text-slate-700 shadow-sm">
+                        <i data-lucide="phone" class="w-4 h-4"></i>
+                      </div>
+                      <span class="text-[9px] font-medium text-slate-500 mt-1">Call</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                      <div class="w-10 h-10 rounded-xl bg-white border border-[#E5E2DC] flex items-center justify-center text-slate-700 shadow-sm">
+                        <i data-lucide="message-square" class="w-4 h-4"></i>
+                      </div>
+                      <span class="text-[9px] font-medium text-slate-500 mt-1">SMS</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                      <div class="w-10 h-10 rounded-xl bg-white border border-[#E5E2DC] flex items-center justify-center text-slate-700 shadow-sm">
+                        <i data-lucide="mail" class="w-4 h-4"></i>
+                      </div>
+                      <span class="text-[9px] font-medium text-slate-500 mt-1">Email</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                      <div class="w-10 h-10 rounded-xl bg-white border border-[#E5E2DC] flex items-center justify-center text-[#7360F2] shadow-sm">
+                        <i data-lucide="phone-call" class="w-4 h-4"></i>
+                      </div>
+                      <span class="text-[9px] font-medium text-slate-500 mt-1">Viber</span>
+                    </div>
+                  </div>
+
+                  <!-- Appointment booking badge preview -->
+                  <div class="p-2.5 rounded-xl bg-white border border-[#E5E2DC] text-left shadow-sm">
+                    <p class="text-[10px] font-bold text-slate-800 flex items-center gap-1.5">
+                      <i data-lucide="calendar" class="w-3 h-3 text-slate-500"></i>
+                      <span>Schedule an Appointment</span>
+                    </p>
+                    <p class="text-[9px] text-slate-400 mt-0.5">Direct Free Background Dispatch</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 3: CLOUD DATABASE SETUP (FREE SUPABASE)                          -->
+      <!-- =================================================================== -->
+      <section id="tabViewCloud" class="hidden space-y-6">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E2DC] shadow-sm max-w-3xl">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+              <i data-lucide="database" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-[#1C1E21]">Instant Cloud Database (Free Supabase)</h2>
+              <p class="text-xs text-[#71717A] mt-1 leading-relaxed">
+                Connect your free Supabase project so that whenever you add or edit a client in this Admin Hub, the client's profile is instantly live across all NFC cards worldwide without editing code or committing to GitHub!
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-6 border-t border-[#E5E2DC] space-y-5">
+            <div class="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4 text-xs text-emerald-900 flex items-start gap-3">
+              <i data-lucide="info" class="w-4 h-4 text-emerald-600 mt-0.5 shrink-0"></i>
+              <div>
+                <p class="font-bold">100% Free Forever</p>
+                <p class="mt-0.5 text-emerald-800">Supabase provides a generous free tier (500MB storage, unlimited reads, zero credit card required). Follow the 3 steps below:</p>
+              </div>
+            </div>
+
+            <!-- Steps -->
+            <div class="space-y-4 text-xs text-slate-700">
+              <div class="p-4 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC]">
+                <p class="font-bold text-slate-900">Step 1: Create a Free Project</p>
+                <p class="mt-0.5 text-slate-600">Go to <a href="https://supabase.com" target="_blank" class="text-indigo-600 underline font-semibold">supabase.com</a>, log in with GitHub, and click "New Project" (takes ~1 minute).</p>
+              </div>
+
+              <div class="p-4 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC]">
+                <div class="flex items-center justify-between mb-2">
+                  <p class="font-bold text-slate-900">Step 2: Run Table SQL (Copy & Paste into SQL Editor)</p>
+                  <button 
+                    onclick="copySqlSchema()" 
+                    class="px-2.5 py-1 rounded bg-slate-800 text-white font-semibold text-[11px] flex items-center gap-1.5 hover:bg-black transition"
+                  >
+                    <i data-lucide="copy" class="w-3 h-3"></i>
+                    <span>Copy SQL Schema</span>
+                  </button>
+                </div>
+                <pre class="bg-slate-900 text-slate-200 p-3 rounded-lg font-mono text-[11px] overflow-x-auto custom-scrollbar">create table if not exists clients (
+  slug text primary key,
+  full_name text not null,
+  initials text,
+  title text,
+  bio text,
+  phone text,
+  email text not null,
+  facebook text,
+  instagram text,
+  photo_url text,
+  created_at timestamp default now()
+);
+alter table clients enable row level security;
+create policy "Public read" on clients for select using (true);
+create policy "Public insert" on clients for insert with check (true);
+create policy "Public update" on clients for update using (true);
+create policy "Public delete" on clients for delete using (true);</pre>
+              </div>
+
+              <div class="p-4 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC]">
+                <p class="font-bold text-slate-900 mb-3">Step 3: Enter Your Project API Keys</p>
+                
+                <div class="space-y-3">
+                  <div>
+                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Project URL</label>
+                    <input 
+                      type="url" 
+                      id="cloudSupabaseUrl" 
+                      placeholder="https://xyzabcdefg.supabase.co" 
+                      class="w-full px-3 py-2 rounded-xl bg-white border border-[#E5E2DC] text-xs font-mono text-[#1C1E21]"
+                    >
+                  </div>
+
+                  <div>
+                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Project Public Anon Key</label>
+                    <input 
+                      type="text" 
+                      id="cloudSupabaseKey" 
+                      placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." 
+                      class="w-full px-3 py-2 rounded-xl bg-white border border-[#E5E2DC] text-xs font-mono text-[#1C1E21]"
+                    >
+                  </div>
+
+                  <div class="flex items-center gap-3 pt-2">
+                    <button 
+                      type="button" 
+                      onclick="saveCloudConfig()" 
+                      class="px-4 py-2 rounded-xl bg-[#1C1E21] hover:bg-black text-white text-xs font-semibold flex items-center gap-2"
+                    >
+                      <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                      <span>Save Cloud Credentials</span>
+                    </button>
+
+                    <button 
+                      type="button" 
+                      onclick="testCloudConnection()" 
+                      class="px-4 py-2 rounded-xl border border-[#E5E2DC] hover:bg-slate-100 text-xs font-semibold text-slate-700 flex items-center gap-2"
+                    >
+                      <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                      <span>Test Connection</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 4: EXPORT & CODE BACKUP                                         -->
+      <!-- =================================================================== -->
+      <section id="tabViewExport" class="hidden space-y-6">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E2DC] shadow-sm max-w-3xl">
+          <div class="flex items-start justify-between">
+            <div>
+              <h2 class="text-lg font-bold text-[#1C1E21]">Export & JavaScript Code Backup</h2>
+              <p class="text-xs text-[#71717A] mt-1">
+                You can copy the generated `CLIENTS` dictionary code directly into <span class="font-mono text-slate-800">index.html</span> at any time, or download a full JSON backup.
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button 
+                onclick="copyCodeBlock()" 
+                class="px-3 py-2 rounded-xl bg-[#1C1E21] text-white text-xs font-semibold flex items-center gap-1.5 hover:bg-black transition"
+              >
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Copy Code</span>
+              </button>
+              <button 
+                onclick="downloadJsonFile()" 
+                class="px-3 py-2 rounded-xl border border-[#E5E2DC] text-slate-700 text-xs font-semibold flex items-center gap-1.5 hover:bg-slate-100 transition"
+              >
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>Download JSON</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <pre id="codeExportDisplay" class="bg-slate-900 text-slate-100 p-4 rounded-2xl font-mono text-xs overflow-x-auto custom-scrollbar max-h-96"></pre>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: CHANGE ADMIN PASSWORD                                              -->
+  <!-- ========================================================================= -->
+  <div id="passwordModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-white rounded-3xl p-6 border border-[#E5E2DC] shadow-2xl">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-[#E5E2DC]">
+        <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="key" class="w-4 h-4 text-slate-700"></i>
+          <span>Change Master Password</span>
+        </h3>
+        <button onclick="closePasswordModal()" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSavePassword(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">New Password</label>
+          <input 
+            type="password" 
+            id="newPassInput" 
+            required 
+            placeholder="At least 6 characters" 
+            class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-xs text-slate-900"
+          >
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Confirm New Password</label>
+          <input 
+            type="password" 
+            id="confirmPassInput" 
+            required 
+            placeholder="Re-type new password" 
+            class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-xs text-slate-900"
+          >
+        </div>
+        <div class="pt-2 flex items-center justify-end gap-2">
+          <button type="button" onclick="closePasswordModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-medium text-slate-600">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-[#1C1E21] text-white text-xs font-bold">Update Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT: LOGIC & DATABASE ENGINE                                       -->
+  <!-- ========================================================================= -->
+  <script>
+    // -------------------------------------------------------------------------
+    // DEFAULT CLIENTS SEED
+    // -------------------------------------------------------------------------
+    const SEED_CLIENTS = {
+      "alexander": {
+        slug: "alexander",
+        fullName: "Alexander Vance",
+        initials: "AV",
+        title: "President & Principal Architect",
+        bio: "Architecture & Structural Engineering • Luxury Residential Design",
+        phone: "+639171234567",
+        email: "alexander@vancestudio.com",
+        facebook: "https://facebook.com/vancestudio",
+        instagram: "https://instagram.com/vancestudio",
+        photoUrl: ""
+      },
+      "maria": {
+        slug: "maria",
+        fullName: "Atty. Maria Santos",
+        initials: "MS",
+        title: "Managing Legal Partner",
+        bio: "Corporate law, contract scaffolding, and executive advisory.",
+        phone: "+639189876543",
+        email: "santoslegal@gmail.com",
+        facebook: "https://facebook.com",
+        instagram: "",
+        photoUrl: ""
+      }
+    };
+
+    // Global in-memory clients
+    let clientsData = {};
+    let editingSlug = null;
+
+    // -------------------------------------------------------------------------
+    // INITIALIZATION & AUTHENTICATION
+    // -------------------------------------------------------------------------
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      loadClientsData();
+      checkAuth();
+    });
+
+    function getMasterPassword() {
+      return localStorage.getItem("tag_admin_pass") || "tapandgo2026";
+    }
+
+    function checkAuth() {
+      const isAuthed = sessionStorage.getItem("tag_admin_session") === "true";
+      const authScreen = document.getElementById("authScreen");
+      const dashboardScreen = document.getElementById("dashboardScreen");
+
+      if (isAuthed) {
+        authScreen.classList.add("hidden");
+        dashboardScreen.classList.remove("hidden");
+        loadCloudConfigIntoInputs();
+        renderClientsList();
+        updateCodeExport();
+        lucide.createIcons();
+      } else {
+        authScreen.classList.remove("hidden");
+        dashboardScreen.classList.add("hidden");
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const entered = document.getElementById("passwordInput").value;
+      const actual = getMasterPassword();
+      const errorEl = document.getElementById("loginError");
+
+      if (entered === actual) {
+        sessionStorage.setItem("tag_admin_session", "true");
+        errorEl.classList.add("hidden");
+        document.getElementById("passwordInput").value = "";
+        checkAuth();
+        showToast("Logged in successfully");
+      } else {
+        errorEl.classList.remove("hidden");
+        const input = document.getElementById("passwordInput");
+        input.classList.add("border-rose-500", "ring-rose-500");
+        setTimeout(() => {
+          input.classList.remove("border-rose-500", "ring-rose-500");
+        }, 1500);
+      }
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem("tag_admin_session");
+      checkAuth();
+      showToast("Logged out");
+    }
+
+    function togglePasswordVisibility() {
+      const input = document.getElementById("passwordInput");
+      const isPass = input.type === "password";
+      input.type = isPass ? "text" : "password";
+    }
+
+    // -------------------------------------------------------------------------
+    // LOCAL DATA STORAGE
+    // -------------------------------------------------------------------------
+    function loadClientsData() {
+      const saved = localStorage.getItem("tag_clients_registry");
+      if (saved) {
+        try {
+          clientsData = JSON.parse(saved);
+        } catch (e) {
+          clientsData = { ...SEED_CLIENTS };
+        }
+      } else {
+        clientsData = { ...SEED_CLIENTS };
+        saveClientsData();
+      }
+      updateMetrics();
+    }
+
+    function saveClientsData() {
+      localStorage.setItem("tag_clients_registry", JSON.stringify(clientsData));
+      updateMetrics();
+      updateCodeExport();
+    }
+
+    function updateMetrics() {
+      const count = Object.keys(clientsData).length;
+      const countEl = document.getElementById("metricClientCount");
+      if (countEl) countEl.textContent = count;
+    }
+
+    // -------------------------------------------------------------------------
+    // TAB NAVIGATION
+    // -------------------------------------------------------------------------
+    function switchTab(tab) {
+      const tabs = ["list", "add", "cloud", "export"];
+      tabs.forEach(t => {
+        const view = document.getElementById(`tabView${capitalize(t)}`);
+        const btn = document.getElementById(`tabBtn${capitalize(t)}`);
+        if (t === tab) {
+          if (view) view.classList.remove("hidden");
+          if (btn) {
+            btn.className = "px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 bg-[#1C1E21] text-white shadow-sm";
+          }
+        } else {
+          if (view) view.classList.add("hidden");
+          if (btn) {
+            btn.className = "px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-[#E5E2DC]";
+          }
+        }
+      });
+      lucide.createIcons();
+    }
+
+    function capitalize(s) {
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    // -------------------------------------------------------------------------
+    // CLIENT DIRECTORY RENDERING
+    // -------------------------------------------------------------------------
+    function renderClientsList() {
+      const grid = document.getElementById("clientsGrid");
+      const emptyState = document.getElementById("emptyClientsState");
+      const query = (document.getElementById("searchInput").value || "").toLowerCase().trim();
+
+      grid.innerHTML = "";
+      const slugs = Object.keys(clientsData);
+
+      const filtered = slugs.filter(s => {
+        const c = clientsData[s];
+        return s.toLowerCase().includes(query) ||
+               (c.fullName && c.fullName.toLowerCase().includes(query)) ||
+               (c.title && c.title.toLowerCase().includes(query)) ||
+               (c.email && c.email.toLowerCase().includes(query));
+      });
+
+      if (filtered.length === 0) {
+        grid.classList.add("hidden");
+        emptyState.classList.remove("hidden");
+        lucide.createIcons();
+        return;
+      }
+
+      grid.classList.remove("hidden");
+      emptyState.classList.add("hidden");
+
+      filtered.forEach(slug => {
+        const client = clientsData[slug];
+        const card = createClientCardElement(client);
+        grid.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    function createClientCardElement(client) {
+      const origin = window.location.origin;
+      const fullUrl = `${origin}/${client.slug}`;
+
+      const div = document.createElement("div");
+      div.className = "bg-white rounded-3xl p-6 border border-[#E5E2DC] shadow-sm flex flex-col justify-between hover:border-slate-400 transition";
+
+      div.innerHTML = `
+        <div>
+          <!-- Header: Initials Avatar + Slug badge -->
+          <div class="flex items-start justify-between gap-3 mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-b from-[#FAF9F6] to-[#E2E8F0] border border-[#CBD5E1] flex items-center justify-center font-bold text-slate-800 text-sm shadow-inner overflow-hidden">
+                ${client.photoUrl ? `<img src="${client.photoUrl}" class="w-full h-full object-cover">` : client.initials}
+              </div>
+              <div>
+                <h4 class="text-sm font-bold text-[#1C1E21] leading-snug">${escapeHtml(client.fullName)}</h4>
+                <p class="text-[11px] text-[#71717A]">${escapeHtml(client.title)}</p>
+              </div>
+            </div>
+            <span class="font-mono text-[10px] font-semibold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
+              /${escapeHtml(client.slug)}
+            </span>
+          </div>
+
+          <!-- Bio -->
+          <p class="text-xs text-[#52525B] line-clamp-2 mb-4 leading-relaxed">${escapeHtml(client.bio)}</p>
+
+          <!-- Contact Snippets -->
+          <div class="space-y-1.5 text-[11px] text-slate-600 border-t border-[#E5E2DC] pt-3 mb-4">
+            <div class="flex items-center gap-2">
+              <i data-lucide="mail" class="w-3.5 h-3.5 text-slate-400"></i>
+              <span class="truncate">${escapeHtml(client.email)}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="phone" class="w-3.5 h-3.5 text-slate-400"></i>
+              <span>${escapeHtml(client.phone)}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Row -->
+        <div class="pt-4 border-t border-[#E5E2DC] space-y-2">
+          <!-- NFC Link Copy Button -->
+          <button 
+            onclick="copyNfcUrl('${client.slug}')" 
+            class="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold flex items-center justify-center gap-2 transition"
+          >
+            <i data-lucide="nfc" class="w-3.5 h-3.5 text-slate-600"></i>
+            <span>Copy NFC Tag Link</span>
+          </button>
+
+          <!-- Edit & Open In New Tab -->
+          <div class="grid grid-cols-3 gap-2">
+            <a 
+              href="/${client.slug}" 
+              target="_blank" 
+              class="py-2 px-2 rounded-xl border border-[#E5E2DC] hover:bg-[#FAF9F6] text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition text-center"
+              title="Test page in new tab"
+            >
+              <i data-lucide="external-link" class="w-3 h-3"></i>
+              <span>Visit</span>
+            </a>
+
+            <button 
+              onclick="editClient('${client.slug}')" 
+              class="py-2 px-2 rounded-xl border border-[#E5E2DC] hover:bg-[#FAF9F6] text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition"
+              title="Edit profile"
+            >
+              <i data-lucide="edit-3" class="w-3 h-3"></i>
+              <span>Edit</span>
+            </button>
+
+            <button 
+              onclick="confirmDeleteClient('${client.slug}')" 
+              class="py-2 px-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition"
+              title="Delete client"
+            >
+              <i data-lucide="trash-2" class="w-3 h-3"></i>
+              <span>Delete</span>
+            </button>
+          </div>
+        </div>
+      `;
+
+      return div;
+    }
+
+    // -------------------------------------------------------------------------
+    // FORM LOGIC (ADD / EDIT)
+    // -------------------------------------------------------------------------
+    function prepareAddNewClient() {
+      resetClientForm();
+      document.getElementById("formTitle").textContent = "Add New Client";
+      document.getElementById("btnSaveText").textContent = "Save Client Profile";
+      document.getElementById("tabAddTitle").textContent = "Add New Client";
+      editingSlug = null;
+      switchTab('add');
+    }
+
+    function editClient(slug) {
+      const client = clientsData[slug];
+      if (!client) return;
+
+      editingSlug = slug;
+      document.getElementById("formTitle").textContent = `Edit Client: ${client.fullName}`;
+      document.getElementById("btnSaveText").textContent = "Update Client Profile";
+      document.getElementById("tabAddTitle").textContent = `Edit (${client.slug})`;
+
+      document.getElementById("inputSlug").value = client.slug;
+      document.getElementById("inputFullName").value = client.fullName;
+      document.getElementById("inputInitials").value = client.initials;
+      document.getElementById("inputTitle").value = client.title;
+      document.getElementById("inputBio").value = client.bio;
+      document.getElementById("inputPhone").value = client.phone;
+      document.getElementById("inputEmail").value = client.email;
+      document.getElementById("inputFacebook").value = client.facebook || "";
+      document.getElementById("inputInstagram").value = client.instagram || "";
+      document.getElementById("inputPhotoUrl").value = client.photoUrl || "";
+
+      updateLivePreview();
+      switchTab('add');
+    }
+
+    function resetClientForm() {
+      document.getElementById("clientForm").reset();
+      editingSlug = null;
+      document.getElementById("formTitle").textContent = "Add New Client";
+      document.getElementById("btnSaveText").textContent = "Save Client Profile";
+      document.getElementById("tabAddTitle").textContent = "Add New Client";
+      updateLivePreview();
+    }
+
+    function handleNameInput(e) {
+      const name = e.target.value;
+      const initialsInput = document.getElementById("inputInitials");
+      const slugInput = document.getElementById("inputSlug");
+
+      // Auto-compute initials if user hasn't typed a custom one
+      if (name) {
+        const parts = name.trim().split(/\s+/);
+        const computedInitials = parts.slice(0, 2).map(p => p[0]).join('').toUpperCase();
+        initialsInput.value = computedInitials;
+
+        // Auto-slugify only if adding new client
+        if (!editingSlug) {
+          const autoSlug = name.toLowerCase()
+            .replace(/[^\w\s-]/g, '')
+            .trim()
+            .replace(/\s+/g, '-');
+          slugInput.value = autoSlug;
+        }
+      }
+      updateLivePreview();
+    }
+
+    function updateLivePreview() {
+      const name = document.getElementById("inputFullName").value || "Alexander Vance";
+      const initials = document.getElementById("inputInitials").value || "AV";
+      const title = document.getElementById("inputTitle").value || "President & Principal Architect";
+      const bio = document.getElementById("inputBio").value || "Architecture & Structural Engineering";
+      const photo = document.getElementById("inputPhotoUrl").value || "";
+      const slug = document.getElementById("inputSlug").value || "alexander";
+
+      document.getElementById("previewUrlText").textContent = `${window.location.host}/${slug}`;
+      document.getElementById("prevName").textContent = name;
+      document.getElementById("prevTitle").textContent = title;
+      document.getElementById("prevBio").textContent = bio;
+      document.getElementById("prevHeaderInitials").textContent = initials;
+      document.getElementById("prevAvatarInitials").textContent = initials;
+
+      const imgEl = document.getElementById("prevAvatarImg");
+      const initialsEl = document.getElementById("prevAvatarInitials");
+      if (photo) {
+        imgEl.src = photo;
+        imgEl.classList.remove("hidden");
+        initialsEl.classList.add("hidden");
+      } else {
+        imgEl.classList.add("hidden");
+        initialsEl.classList.remove("hidden");
+      }
+    }
+
+    async function handleSaveClient(e) {
+      e.preventDefault();
+
+      const rawSlug = document.getElementById("inputSlug").value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+      if (!rawSlug) {
+        showToast("Please enter a valid URL slug");
+        return;
+      }
+
+      const client = {
+        slug: rawSlug,
+        fullName: document.getElementById("inputFullName").value.trim(),
+        initials: (document.getElementById("inputInitials").value.trim() || "KS").toUpperCase(),
+        title: document.getElementById("inputTitle").value.trim(),
+        bio: document.getElementById("inputBio").value.trim(),
+        phone: document.getElementById("inputPhone").value.trim(),
+        email: document.getElementById("inputEmail").value.trim(),
+        facebook: document.getElementById("inputFacebook").value.trim(),
+        instagram: document.getElementById("inputInstagram").value.trim(),
+        photoUrl: document.getElementById("inputPhotoUrl").value.trim()
+      };
+
+      // If slug changed during edit, clean up old slug
+      if (editingSlug && editingSlug !== rawSlug) {
+        delete clientsData[editingSlug];
+      }
+
+      clientsData[rawSlug] = client;
+      saveClientsData();
+
+      // Cloud sync if configured
+      await syncClientToCloud(client);
+
+      showToast(`Client "${client.fullName}" saved successfully!`);
+      resetClientForm();
+      renderClientsList();
+      switchTab('list');
+    }
+
+    function confirmDeleteClient(slug) {
+      const client = clientsData[slug];
+      if (!client) return;
+
+      if (confirm(`Are you sure you want to delete the client profile for "${client.fullName}" (/${slug})?`)) {
+        delete clientsData[slug];
+        saveClientsData();
+        deleteClientFromCloud(slug);
+        renderClientsList();
+        showToast(`Client "${client.fullName}" removed`);
+      }
+    }
+
+    function copyNfcUrl(slug) {
+      const fullUrl = `${window.location.origin}/${slug}`;
+      navigator.clipboard.writeText(fullUrl).then(() => {
+        showToast(`Copied NFC URL: ${fullUrl}`);
+      });
+    }
+
+    // -------------------------------------------------------------------------
+    // SUPABASE CLOUD DATABASE SYNC ENGINE
+    // -------------------------------------------------------------------------
+    function loadCloudConfigIntoInputs() {
+      const url = localStorage.getItem("tag_supabase_url") || "";
+      const key = localStorage.getItem("tag_supabase_key") || "";
+      const urlEl = document.getElementById("cloudSupabaseUrl");
+      const keyEl = document.getElementById("cloudSupabaseKey");
+      if (urlEl) urlEl.value = url;
+      if (keyEl) keyEl.value = key;
+    }
+
+    function saveCloudConfig() {
+      const url = document.getElementById("cloudSupabaseUrl").value.trim();
+      const key = document.getElementById("cloudSupabaseKey").value.trim();
+      localStorage.setItem("tag_supabase_url", url);
+      localStorage.setItem("tag_supabase_key", key);
+      showToast("Cloud configuration saved");
+    }
+
+    async function testCloudConnection() {
+      const url = document.getElementById("cloudSupabaseUrl").value.trim();
+      const key = document.getElementById("cloudSupabaseKey").value.trim();
+      if (!url || !key) {
+        showToast("Please enter both Supabase URL and Key first");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${url}/rest/v1/clients?select=slug&limit=1`, {
+          headers: {
+            "apikey": key,
+            "Authorization": `Bearer ${key}`
+          }
+        });
+        if (res.ok) {
+          showToast("Connected to Supabase successfully!");
+        } else {
+          showToast(`Supabase Error (${res.status}): Make sure you ran the SQL Schema table creation`);
+        }
+      } catch (e) {
+        showToast("Failed to reach Supabase. Check URL format.");
+      }
+    }
+
+    async function syncClientToCloud(client) {
+      const url = localStorage.getItem("tag_supabase_url");
+      const key = localStorage.getItem("tag_supabase_key");
+      if (!url || !key) return; // Cloud not enabled
+
+      try {
+        await fetch(`${url}/rest/v1/clients`, {
+          method: "POST",
+          headers: {
+            "apikey": key,
+            "Authorization": `Bearer ${key}`,
+            "Content-Type": "application/json",
+            "Prefer": "resolution=merge-duplicates"
+          },
+          body: JSON.stringify({
+            slug: client.slug,
+            full_name: client.fullName,
+            initials: client.initials,
+            title: client.title,
+            bio: client.bio,
+            phone: client.phone,
+            email: client.email,
+            facebook: client.facebook || "",
+            instagram: client.instagram || "",
+            photo_url: client.photoUrl || ""
+          })
+        });
+      } catch (err) {
+        console.warn("Cloud sync error:", err);
+      }
+    }
+
+    async function deleteClientFromCloud(slug) {
+      const url = localStorage.getItem("tag_supabase_url");
+      const key = localStorage.getItem("tag_supabase_key");
+      if (!url || !key) return;
+
+      try {
+        await fetch(`${url}/rest/v1/clients?slug=eq.${encodeURIComponent(slug)}`, {
+          method: "DELETE",
+          headers: {
+            "apikey": key,
+            "Authorization": `Bearer ${key}`
+          }
+        });
+      } catch (err) {
+        console.warn("Cloud delete error:", err);
+      }
+    }
+
+    function copySqlSchema() {
+      const sql = `create table if not exists clients (
+  slug text primary key,
+  full_name text not null,
+  initials text,
+  title text,
+  bio text,
+  phone text,
+  email text not null,
+  facebook text,
+  instagram text,
+  photo_url text,
+  created_at timestamp default now()
+);
+alter table clients enable row level security;
+create policy "Public read" on clients for select using (true);
+create policy "Public insert" on clients for insert with check (true);
+create policy "Public update" on clients for update using (true);
+create policy "Public delete" on clients for delete using (true);`;
+
+      navigator.clipboard.writeText(sql).then(() => {
+        showToast("SQL table schema copied to clipboard!");
+      });
+    }
+
+    // -------------------------------------------------------------------------
+    // CODE EXPORT & JSON DOWNLOAD
+    // -------------------------------------------------------------------------
+    function updateCodeExport() {
+      const codeEl = document.getElementById("codeExportDisplay");
+      if (!codeEl) return;
+
+      const codeString = `// Paste into index.html CLIENTS definition:\nconst CLIENTS = ${JSON.stringify(clientsData, null, 2)};`;
+      codeEl.textContent = codeString;
+    }
+
+    function copyCodeBlock() {
+      const codeEl = document.getElementById("codeExportDisplay");
+      navigator.clipboard.writeText(codeEl.textContent).then(() => {
+        showToast("Code block copied to clipboard!");
+      });
+    }
+
+    function downloadJsonFile() {
+      const blob = new Blob([JSON.stringify(clientsData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "clients.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("Downloaded clients.json");
+    }
+
+    // -------------------------------------------------------------------------
+    // PASSWORD MANAGEMENT
+    // -------------------------------------------------------------------------
+    function openPasswordModal() {
+      document.getElementById("passwordModal").classList.remove("hidden");
+    }
+
+    function closePasswordModal() {
+      document.getElementById("passwordModal").classList.add("hidden");
+      document.getElementById("newPassInput").value = "";
+      document.getElementById("confirmPassInput").value = "";
+    }
+
+    function handleSavePassword(e) {
+      e.preventDefault();
+      const p1 = document.getElementById("newPassInput").value;
+      const p2 = document.getElementById("confirmPassInput").value;
+
+      if (p1.length < 6) {
+        showToast("Password must be at least 6 characters");
+        return;
+      }
+      if (p1 !== p2) {
+        showToast("Passwords do not match");
+        return;
+      }
+
+      localStorage.setItem("tag_admin_pass", p1);
+      closePasswordModal();
+      showToast("Master password updated successfully!");
+    }
+
+    // -------------------------------------------------------------------------
+    // UTILITIES
+    // -------------------------------------------------------------------------
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      const text = document.getElementById("toastMsg");
+      text.textContent = msg;
+      toast.classList.remove("-translate-y-16", "opacity-0");
+      toast.classList.add("translate-y-0", "opacity-100");
+
+      setTimeout(() => {
+        toast.classList.remove("translate-y-0", "opacity-100");
+        toast.classList.add("-translate-y-16", "opacity-0");
+      }, 3000);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>
