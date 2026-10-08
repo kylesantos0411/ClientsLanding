@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Kyle Santos — Entrepreneur & Multi-Business Owner</title>
+  
+  <!-- Meta & OpenGraph for Rich Sharing Previews -->
+  <meta name="description" content="Kyle Santos — Entrepreneur & Multi-Business Owner. Helping businesses establish a modern digital presence through multiple ventures." />
+  <meta property="og:title" content="Kyle Santos — Entrepreneur & Multi-Business Owner" />
+  <meta property="og:description" content="Helping businesses establish a modern digital presence through multiple ventures." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0a0c10" />
+
+  <!-- Fonts: Playfair Display (Luxury Serif) + Plus Jakarta Sans (Clean Modern Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+          colors: {
+            champagne: {
+              100: '#FAF4E6',
+              200: '#F4E7CB',
+              300: '#E6D2A5',
+              400: '#D9BC7D',
+              500: '#C7A356',
+              600: '#A9843B',
+              700: '#846427',
+              800: '#5C4417',
+              900: '#38280B',
+            },
+            noir: {
+              950: '#07080b',
+              900: '#0c0e14',
+              850: '#12151e',
+              800: '#171b26',
+              700: '#222838',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+    
+    body {
+      background-color: #08090d;
+      color: #edeef2;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Champagne Luxury Background (Deep, refined, not AI-swirly) */
+    .luxury-bg {
+      background-color: #08090d;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(201, 163, 86, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 10% 30%, rgba(180, 140, 60, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 60%, rgba(217, 188, 125, 0.07) 0%, transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(169, 132, 59, 0.1) 0%, transparent 50%);
+    }
+
+    /* Refined Luxury Glassmorphism */
+    .glass-panel {
+      background: rgba(23, 27, 38, 0.65);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(217, 188, 125, 0.16);
+      box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.7);
+    }
+
+    .glass-tile {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-tile:hover {
+      background: rgba(217, 188, 125, 0.09);
+      border-color: rgba(217, 188, 125, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .glass-tile:active {
+      transform: scale(0.97);
+    }
+
+    /* Halo Metallic Ring */
+    .halo-ring {
+      position: relative;
+    }
+    .halo-ring::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 9999px;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(230, 210, 165, 0.9), rgba(169, 132, 59, 0.3), rgba(217, 188, 125, 0.95));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      animation: pulse-glow 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse-glow {
+      0% {
+        opacity: 0.6;
+        filter: drop-shadow(0 0 12px rgba(201, 163, 86, 0.3));
+      }
+      100% {
+        opacity: 1;
+        filter: drop-shadow(0 0 24px rgba(201, 163, 86, 0.65));
+      }
+    }
+
+    /* Gold Gradient Text */
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FFF6E5 0%, #E6D2A5 45%, #C7A356 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .gold-sub-text {
+      background: linear-gradient(135deg, #F4E7CB 0%, #D9BC7D 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Button Shimmer */
+    .btn-gold-glow {
+      background: linear-gradient(135deg, #1c1d24 0%, #101217 100%);
+      border: 1px solid rgba(217, 188, 125, 0.35);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all 0.25s ease;
+    }
+    .btn-gold-glow:hover {
+      border-color: rgba(217, 188, 125, 0.7);
+      box-shadow: 0 6px 24px rgba(199, 163, 86, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transform: translateY(-1.5px);
+    }
+    .btn-gold-glow:active {
+      transform: scale(0.98);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #08090d;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #252a38;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #c7a356;
+    }
+  </style>
+</head>
+<body class="luxury-bg min-h-screen text-slate-100 flex flex-col items-center justify-start py-0 sm:py-8 sm:px-4">
+
+  <!-- Desktop Presentation Outer Frame Container (Max width 460px mobile card feel, yet expansive on scroll) -->
+  <div class="w-full max-w-md sm:rounded-[36px] bg-noir-900/90 sm:border sm:border-champagne-400/20 sm:shadow-[0_24px_80px_rgba(0,0,0,0.85)] flex flex-col relative overflow-hidden backdrop-blur-2xl">
+    
+    <!-- Decorative Luxury Ambient Glow Orbs -->
+    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-80 bg-champagne-500/15 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-96 -right-20 w-60 h-60 bg-champagne-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- ========================================== -->
+    <!-- 1. TOP UTILITY & NAVIGATION BAR            -->
+    <!-- ========================================== -->
+    <header class="relative z-30 px-6 pt-6 pb-2 flex justify-between items-center border-b border-white/[0.04]">
+      <!-- Brand / Monogram Mini Badge -->
+      <a href="#hero" class="flex items-center gap-2 group">
+        <div class="w-10 h-10 rounded-full bg-noir-800 border border-champagne-400/30 flex items-center justify-center text-xs font-semibold tracking-wider text-champagne-200 shadow-md group-hover:border-champagne-400 transition-colors">
+          KS
+        </div>
+        <div class="hidden xs:block">
+          <span class="text-xs font-semibold tracking-wide text-slate-200 block leading-tight">Kyle Santos</span>
+          <span class="text-[10px] text-champagne-400/80 uppercase tracking-widest block font-medium">Executive</span>
+        </div>
+      </a>
+
+      <!-- Quick Actions (Share, QR, Navigation Drawer) -->
+      <div class="flex items-center gap-1.5">
+        <button onclick="openQrModal()" title="Show Networking QR Code" class="p-2.5 rounded-full text-slate-300 hover:text-champagne-200 hover:bg-white/5 border border-white/5 hover:border-champagne-400/30 transition-all active:scale-95">
+          <i data-lucide="qr-code" class="w-4 h-4"></i>
+        </button>
+        
+        <button onclick="shareProfile()" title="Share Executive Card" class="p-2.5 rounded-full text-slate-300 hover:text-champagne-200 hover:bg-white/5 border border-white/5 hover:border-champagne-400/30 transition-all active:scale-95">
+          <i data-lucide="share-2" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Slide Drawer Menu Button -->
+        <button onclick="toggleNavDrawer()" title="Menu" class="p-2.5 rounded-full text-slate-300 hover:text-champagne-200 hover:bg-white/5 border border-white/5 hover:border-champagne-400/30 transition-all active:scale-95 ml-1">
+          <i data-lucide="menu" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </header>
+
+
+    <!-- ========================================== -->
+    <!-- 2. HERO CARD SECTION (Exact visual layout)  -->
+    <!-- ========================================== -->
+    <section id="hero" class="relative z-20 px-6 pt-7 pb-6 flex flex-col items-center text-center">
+      
+      <!-- Central Metallic Avatar Ring -->
+      <div class="relative mb-5">
+        <div class="halo-ring w-28 h-28 rounded-full bg-noir-800 flex items-center justify-center p-1.5 shadow-[0_10px_35px_rgba(0,0,0,0.8)]">
+          <!-- Inner Monogram or Photo -->
+          <div class="w-full h-full rounded-full bg-gradient-to-b from-noir-850 to-noir-950 flex items-center justify-center border border-champagne-400/20 shadow-inner">
+            <span class="font-serif text-3xl font-bold tracking-wider gold-gradient-text">KS</span>
+          </div>
+        </div>
+
+        <!-- Live Status Floating Badge on Ring -->
+        <div class="absolute -bottom-1 right-1 w-6 h-6 rounded-full bg-noir-900 border-2 border-noir-800 flex items-center justify-center shadow-lg" title="Active & Available">
+          <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+        </div>
+      </div>
+
+      <!-- Live Status Pill -->
+      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-4 backdrop-blur-md">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+        <span>Available for consultations</span>
+      </div>
+
+      <!-- Executive Name -->
+      <h1 class="font-serif text-4xl sm:text-[42px] font-bold tracking-tight gold-gradient-text leading-none mb-2">
+        Kyle Santos
+      </h1>
+
+      <!-- Subtitle & Focus -->
+      <p class="text-[11px] font-semibold tracking-[0.22em] text-champagne-400 uppercase mb-3">
+        ENTREPRENEUR &bull; MULTI-BUSINESS OWNER
+      </p>
+
+      <!-- Value Proposition / Elevator Bio -->
+      <p class="text-xs sm:text-[13px] text-slate-300/85 leading-relaxed max-w-sm mb-5 font-normal">
+        Helping businesses establish a modern digital presence, optimize customer acquisition, and scale revenue through multiple technology and service ventures.
+      </p>
+
+      <!-- Business Partner Pill (Links to Charls Andrada) -->
+      <a id="partnerPill" href="https://tapandgo.cards/charls" target="_blank" class="w-full py-2.5 px-4 rounded-2xl glass-tile flex items-center justify-between mb-3.5 group">
+        <div class="flex items-center gap-3">
+          <div class="w-7 h-7 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 group-hover:text-champagne-300 transition-colors">
+            <i data-lucide="user" class="w-3.5 h-3.5"></i>
+          </div>
+          <div class="text-left text-xs">
+            <span class="text-slate-400 block text-[11px] leading-tight">Business partner:</span>
+            <span class="text-slate-100 font-semibold group-hover:text-champagne-300 transition-colors">Charls Andrada</span>
+          </div>
+        </div>
+        <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400 group-hover:text-champagne-300 group-hover:translate-x-0.5 transition-all"></i>
+      </a>
+
+      <!-- Primary Action: Save Contact (.vcf) -->
+      <button onclick="downloadVCard()" class="w-full py-3.5 px-5 rounded-2xl btn-gold-glow flex items-center justify-between group cursor-pointer mb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-champagne-500/10 border border-champagne-400/30 flex items-center justify-center text-champagne-300 group-hover:scale-105 transition-transform">
+            <i data-lucide="user-plus" class="w-4 h-4"></i>
+          </div>
+          <span class="text-sm font-semibold text-slate-100 tracking-wide">Save Contact (.vcf)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] text-champagne-400/80 font-medium hidden xs:inline">Add to Phone</span>
+          <div class="w-2.5 h-2.5 rounded-full bg-champagne-400 shadow-[0_0_8px_rgba(217,188,125,0.8)]"></div>
+        </div>
+      </button>
+
+      <!-- 4 Quick Action Glass Tiles (Call, SMS, Email, Viber) -->
+      <div class="grid grid-cols-4 gap-2 w-full mb-3">
+        <!-- Call -->
+        <a id="btnCall" href="tel:+639194850794" class="glass-tile rounded-2xl py-3 px-2 flex flex-col items-center justify-center group">
+          <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-slate-200 group-hover:text-champagne-300 mb-1 transition-colors">
+            <i data-lucide="phone" class="w-4 h-4"></i>
+          </div>
+          <span class="text-[11px] font-medium text-slate-300 group-hover:text-white">Call</span>
+        </a>
+
+        <!-- SMS -->
+        <a id="btnSms" href="sms:+639194850794" class="glass-tile rounded-2xl py-3 px-2 flex flex-col items-center justify-center group">
+          <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-slate-200 group-hover:text-champagne-300 mb-1 transition-colors">
+            <i data-lucide="message-square" class="w-4 h-4"></i>
+          </div>
+          <span class="text-[11px] font-medium text-slate-300 group-hover:text-white">SMS</span>
+        </a>
+
+        <!-- Email -->
+        <a id="btnEmail" href="mailto:kylesantos0411@gmail.com" class="glass-tile rounded-2xl py-3 px-2 flex flex-col items-center justify-center group">
+          <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-slate-200 group-hover:text-champagne-300 mb-1 transition-colors">
+            <i data-lucide="mail" class="w-4 h-4"></i>
+          </div>
+          <span class="text-[11px] font-medium text-slate-300 group-hover:text-white">Email</span>
+        </a>
+
+        <!-- Viber -->
+        <a id="btnViber" href="viber://chat?number=%2B639194850794" class="glass-tile rounded-2xl py-3 px-2 flex flex-col items-center justify-center group">
+          <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-slate-200 group-hover:text-champagne-300 mb-1 transition-colors">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+          </div>
+          <span class="text-[11px] font-medium text-slate-300 group-hover:text-white">Viber</span>
+        </a>
+      </div>
+
+      <!-- Featured LinkedIn Direct Action -->
+      <a id="btnLinkedIn" href="https://www.linkedin.com/in/kyle-nero-santos-14287b349" target="_blank" class="w-full py-3 px-4 rounded-2xl glass-tile flex items-center justify-between group mb-5">
+        <div class="flex items-center gap-3">
+          <div class="w-7 h-7 rounded-lg bg-[#0a66c2]/20 border border-[#0a66c2]/40 flex items-center justify-center text-[#0a66c2]">
+            <i data-lucide="linkedin" class="w-4 h-4"></i>
+          </div>
+          <span class="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors">Connect on LinkedIn</span>
+        </div>
+        <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400 group-hover:text-champagne-300 group-hover:translate-x-0.5 transition-all"></i>
+      </a>
+
+      <!-- Scroll to Explore Indicator -->
+      <a href="#ventures" class="inline-flex flex-col items-center text-slate-400 hover:text-champagne-300 transition-colors group pt-1">
+        <span class="text-[10px] font-semibold tracking-widest uppercase text-slate-400/90 mb-1">Scroll to explore</span>
+        <i data-lucide="chevron-down" class="w-4 h-4 animate-bounce text-champagne-400"></i>
+      </a>
+
+    </section>
+
+    <!-- Subtle Section Divider -->
+    <div class="h-px w-full bg-gradient-to-r from-transparent via-champagne-400/20 to-transparent"></div>
+
+
+    <!-- ========================================== -->
+    <!-- 3. VENTURES & BUSINESSES SECTION           -->
+    <!-- ========================================== -->
+    <section id="ventures" class="px-6 py-8 relative z-20">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-champagne-400 block">Portfolio</span>
+          <h2 class="font-serif text-2xl font-bold gold-gradient-text">Ventures & Companies</h2>
+        </div>
+        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300">
+          3 Active
+        </span>
+      </div>
+
+      <div class="space-y-3.5">
+        
+        <!-- Venture 1: TapAndGo -->
+        <div class="p-4 rounded-2xl glass-tile border border-champagne-400/20 relative overflow-hidden group">
+          <div class="flex items-start justify-between mb-2">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-champagne-500/15 border border-champagne-400/40 flex items-center justify-center text-champagne-300 shrink-0">
+                <i data-lucide="nfc" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-slate-100 group-hover:text-champagne-200 transition-colors">TapAndGo</h3>
+                <span class="text-[11px] text-slate-400">Smart NFC & Contactless Systems</span>
+              </div>
+            </div>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-champagne-500/20 text-champagne-300 border border-champagne-400/30">
+              Flagship
+            </span>
+          </div>
+          <p class="text-xs text-slate-300/80 leading-relaxed mb-3">
+            Physical-to-digital touchpoints for modern retail, hospitality, and corporate executives. Instant vCard sharing, automated Google review tap stands, and custom cards.
+          </p>
+          <div class="flex items-center justify-between pt-2 border-t border-white/[0.06] text-xs">
+            <span class="text-[11px] text-slate-400">Co-founder & Executive</span>
+            <a href="https://tapandgo.cards" target="_blank" class="inline-flex items-center gap-1 text-champagne-300 hover:text-champagne-200 font-semibold group/link">
+              <span>Visit Site</span>
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Venture 2: Digital Presence & High-Performance Web -->
+        <div class="p-4 rounded-2xl glass-tile border border-white/[0.08] relative overflow-hidden group">
+          <div class="flex items-start justify-between mb-2">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-400/30 flex items-center justify-center text-blue-300 shrink-0">
+                <i data-lucide="globe" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-slate-100 group-hover:text-champagne-200 transition-colors">Digital Presence Architecture</h3>
+                <span class="text-[11px] text-slate-400">Web Engineering & Modernization</span>
+              </div>
+            </div>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20">
+              Service
+            </span>
+          </div>
+          <p class="text-xs text-slate-300/80 leading-relaxed mb-3">
+            Deploying high-speed, conversion-engineered digital platforms and landing hubs for entrepreneurs and businesses looking to dominate their local market.
+          </p>
+          <div class="flex items-center justify-between pt-2 border-t border-white/[0.06] text-xs">
+            <span class="text-[11px] text-slate-400">Strategic Practice</span>
+            <a href="#consultation" class="inline-flex items-center gap-1 text-slate-300 hover:text-champagne-300 font-semibold">
+              <span>Inquire</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Venture 3: Strategic Growth & Consultation -->
+        <div class="p-4 rounded-2xl glass-tile border border-white/[0.08] relative overflow-hidden group">
+          <div class="flex items-start justify-between mb-2">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-400/30 flex items-center justify-center text-emerald-300 shrink-0">
+                <i data-lucide="trending-up" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-slate-100 group-hover:text-champagne-200 transition-colors">Business Systems Advisory</h3>
+                <span class="text-[11px] text-slate-400">Operations & Acquisition Systems</span>
+              </div>
+            </div>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
+              Advisory
+            </span>
+          </div>
+          <p class="text-xs text-slate-300/80 leading-relaxed mb-3">
+            Consulting business owners on integrating contactless tech, reputation dominance, and structured client onboarding to boost lifetime value and efficiency.
+          </p>
+          <div class="flex items-center justify-between pt-2 border-t border-white/[0.06] text-xs">
+            <span class="text-[11px] text-slate-400">1-on-1 Consultation</span>
+            <a href="#consultation" class="inline-flex items-center gap-1 text-slate-300 hover:text-champagne-300 font-semibold">
+              <span>Book Time</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Subtle Divider -->
+    <div class="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+
+
+    <!-- ========================================== -->
+    <!-- 4. CORE SERVICES & HOW I HELP              -->
+    <!-- ========================================== -->
+    <section id="services" class="px-6 py-8 relative z-20">
+      <div class="mb-4">
+        <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-champagne-400 block">Capabilities</span>
+        <h2 class="font-serif text-2xl font-bold gold-gradient-text">How We Drive Growth</h2>
+      </div>
+
+      <div class="grid grid-cols-1 gap-3">
+        <!-- Service 1 -->
+        <div class="p-3.5 rounded-2xl glass-tile flex items-start gap-3.5">
+          <div class="w-9 h-9 rounded-xl bg-champagne-500/10 border border-champagne-400/30 flex items-center justify-center text-champagne-300 shrink-0 mt-0.5">
+            <i data-lucide="credit-card" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-xs font-bold text-slate-100">Custom NFC Business Cards</h3>
+            <p class="text-[11px] text-slate-400 leading-snug mt-0.5">
+              Premium matte or metal physical cards programmed with contactless chips to instantly transfer your profile, social handles, and vCard into any client's smartphone.
+            </p>
+          </div>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="p-3.5 rounded-2xl glass-tile flex items-start gap-3.5">
+          <div class="w-9 h-9 rounded-xl bg-champagne-500/10 border border-champagne-400/30 flex items-center justify-center text-champagne-300 shrink-0 mt-0.5">
+            <i data-lucide="star" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-xs font-bold text-slate-100">Google Review Boosters</h3>
+            <p class="text-[11px] text-slate-400 leading-snug mt-0.5">
+              Countertop NFC stands and tap plates placed at checkout to capture 5-star customer reviews on Google in under 3 seconds without typing.
+            </p>
+          </div>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="p-3.5 rounded-2xl glass-tile flex items-start gap-3.5">
+          <div class="w-9 h-9 rounded-xl bg-champagne-500/10 border border-champagne-400/30 flex items-center justify-center text-champagne-300 shrink-0 mt-0.5">
+            <i data-lucide="layout" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-xs font-bold text-slate-100">Executive Web Platforms</h3>
+            <p class="text-[11px] text-slate-400 leading-snug mt-0.5">
+              High-converting, hyper-fast digital landing hubs tailored for founders, local clinics, restaurants, and retail looking for a top-tier digital presence.
+            </p>
+          </div>
+        </div>
+
+        <!-- Service 4 -->
+        <div class="p-3.5 rounded-2xl glass-tile flex items-start gap-3.5">
+          <div class="w-9 h-9 rounded-xl bg-champagne-500/10 border border-champagne-400/30 flex items-center justify-center text-champagne-300 shrink-0 mt-0.5">
+            <i data-lucide="shield-check" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-xs font-bold text-slate-100">End-to-End Strategic Setup</h3>
+            <p class="text-[11px] text-slate-400 leading-snug mt-0.5">
+              Turnkey onboarding, staff training, custom domain routing, and ongoing support so your team executes flawlessly.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Subtle Divider -->
+    <div class="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+
+
+    <!-- ========================================== -->
+    <!-- 5. CONSULTATION & DIRECT INQUIRY           -->
+    <!-- ========================================== -->
+    <section id="consultation" class="px-6 py-8 relative z-20">
+      <div class="mb-4 text-center">
+        <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-champagne-400 block">Direct Access</span>
+        <h2 class="font-serif text-2xl font-bold gold-gradient-text">Start a Conversation</h2>
+        <p class="text-xs text-slate-400 mt-1">
+          Have an inquiry, partnership proposal, or looking to equip your business with NFC & web solutions?
+        </p>
+      </div>
+
+      <!-- Quick Message / Direct Consultation Form -->
+      <form onsubmit="handleInquiry(event)" class="p-5 rounded-2xl glass-panel space-y-3">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">Your Name</label>
+          <input type="text" id="senderName" required placeholder="e.g. John Doe" class="w-full px-3.5 py-2.5 rounded-xl bg-noir-800/80 border border-white/10 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-champagne-400 transition-colors" />
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">Business / Company</label>
+          <input type="text" id="senderCompany" placeholder="e.g. Acme Corp / Local Retail" class="w-full px-3.5 py-2.5 rounded-xl bg-noir-800/80 border border-white/10 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-champagne-400 transition-colors" />
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">Primary Interest</label>
+          <select id="inquiryType" class="w-full px-3.5 py-2.5 rounded-xl bg-noir-800/80 border border-white/10 text-xs text-slate-100 focus:outline-none focus:border-champagne-400 transition-colors">
+            <option value="NFC Digital Cards & Smart Systems">NFC Digital Cards & Smart Systems</option>
+            <option value="Google Review Booster Stands">Google Review Booster Stands</option>
+            <option value="Professional Website & Landing Hub">Professional Website & Landing Hub</option>
+            <option value="Partnership / Multi-Business Opportunity">Partnership / Joint Venture</option>
+            <option value="General Executive Consultation">General Consultation</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">Message / Project Details</label>
+          <textarea id="senderMessage" rows="3" placeholder="Briefly describe what you're aiming to accomplish..." class="w-full px-3.5 py-2.5 rounded-xl bg-noir-800/80 border border-white/10 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-champagne-400 transition-colors resize-none"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-3 px-4 rounded-xl btn-gold-glow flex items-center justify-center gap-2 text-xs font-semibold text-white tracking-wide cursor-pointer">
+          <i data-lucide="send" class="w-3.5 h-3.5 text-champagne-300"></i>
+          <span>Send Inquiry via Email / Chat</span>
+        </button>
+
+        <p class="text-[10px] text-center text-slate-500 pt-1">
+          Direct response guaranteed within 24 business hours.
+        </p>
+      </form>
+    </section>
+
+    <!-- Subtle Divider -->
+    <div class="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+
+
+    <!-- ========================================== -->
+    <!-- 6. EXECUTIVE NETWORK & SOCIALS             -->
+    <!-- ========================================== -->
+    <section class="px-6 py-8 relative z-20">
+      <div class="mb-4">
+        <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-champagne-400 block">Direct Channels</span>
+        <h2 class="font-serif text-2xl font-bold gold-gradient-text">Connect With Kyle</h2>
+      </div>
+
+      <div class="space-y-2">
+        <!-- LinkedIn -->
+        <a id="linkLinkedInFull" href="https://www.linkedin.com/in/kyle-nero-santos-14287b349" target="_blank" class="flex items-center justify-between p-3.5 rounded-2xl glass-tile text-xs text-slate-200 group">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-[#0a66c2]/15 border border-[#0a66c2]/30 flex items-center justify-center text-[#0a66c2]">
+              <i data-lucide="linkedin" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <span class="font-semibold block text-slate-100 group-hover:text-champagne-300 transition-colors">LinkedIn Profile</span>
+              <span class="text-[11px] text-slate-400">Professional network & experience</span>
+            </div>
+          </div>
+          <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-champagne-300 transition-colors"></i>
+        </a>
+
+        <!-- Facebook -->
+        <a id="linkFacebook" href="https://www.facebook.com/share/1C7PU3sCpu/?mibextid=wwXIfr" target="_blank" class="flex items-center justify-between p-3.5 rounded-2xl glass-tile text-xs text-slate-200 group">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-blue-600/15 border border-blue-500/30 flex items-center justify-center text-blue-500">
+              <i data-lucide="facebook" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <span class="font-semibold block text-slate-100 group-hover:text-champagne-300 transition-colors">Facebook Profile</span>
+              <span class="text-[11px] text-slate-400">Direct outreach & community</span>
+            </div>
+          </div>
+          <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-champagne-300 transition-colors"></i>
+        </a>
+
+        <!-- Instagram -->
+        <a id="linkInstagram" href="https://www.instagram.com/kaiipuccino" target="_blank" class="flex items-center justify-between p-3.5 rounded-2xl glass-tile text-xs text-slate-200 group">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-pink-500/15 border border-pink-500/30 flex items-center justify-center text-pink-400">
+              <i data-lucide="instagram" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <span class="font-semibold block text-slate-100 group-hover:text-champagne-300 transition-colors">Instagram (@kaiipuccino)</span>
+              <span class="text-[11px] text-slate-400">Behind-the-scenes & ventures</span>
+            </div>
+          </div>
+          <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-champagne-300 transition-colors"></i>
+        </a>
+      </div>
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- 7. MINIMAL LUXURY FOOTER                   -->
+    <!-- ========================================== -->
+    <footer class="px-6 py-8 border-t border-white/[0.06] text-center relative z-20">
+      <div class="flex items-center justify-center gap-2 mb-2">
+        <div class="w-6 h-6 rounded-full bg-noir-800 border border-champagne-400/40 flex items-center justify-center text-[10px] font-bold text-champagne-300">
+          KS
+        </div>
+        <span class="font-serif text-sm font-semibold gold-gradient-text">Kyle Santos</span>
+      </div>
+      <p class="text-[11px] text-slate-500 mb-4">
+        Entrepreneur &bull; Multi-Business Owner &bull; Digital & NFC Systems
+      </p>
+
+      <div class="flex items-center justify-center gap-4 text-xs text-slate-400 mb-5">
+        <button onclick="downloadVCard()" class="hover:text-champagne-300 transition-colors">Download vCard</button>
+        <span>&bull;</span>
+        <button onclick="openQrModal()" class="hover:text-champagne-300 transition-colors">Scan QR</button>
+        <span>&bull;</span>
+        <a href="#hero" class="hover:text-champagne-300 transition-colors">Back to top</a>
+      </div>
+
+      <p class="text-[10px] text-slate-600">
+        &copy; <span id="year"></span> Kyle Santos. All Rights Reserved.
+      </p>
+    </footer>
+
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- MODAL: QR CODE FOR INSTANT SCAN            -->
+  <!-- ========================================== -->
+  <div id="qrModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 transition-all" onclick="closeQrModal(event)">
+    <div class="bg-noir-900 border border-champagne-400/30 rounded-3xl p-6 max-w-xs w-full text-center space-y-4 shadow-2xl relative" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center">
+        <div class="text-left">
+          <span class="text-[10px] uppercase tracking-widest text-champagne-400 font-semibold block">Networking</span>
+          <h3 class="text-sm font-bold text-slate-100">Scan Contact Card</h3>
+        </div>
+        <button onclick="closeQrModal()" class="w-7 h-7 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <!-- QR Container with Luxury Frame -->
+      <div class="p-3.5 bg-white rounded-2xl shadow-inner inline-block mx-auto border-2 border-champagne-400/30">
+        <div id="qrcode"></div>
+      </div>
+
+      <p class="text-xs text-slate-400 leading-snug">
+        Point your smartphone camera to view and save Kyle's digital executive card.
+      </p>
+
+      <div class="grid grid-cols-2 gap-2 pt-1">
+        <button onclick="copyCurrentUrl()" class="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-200 transition-colors flex items-center justify-center gap-1.5">
+          <i data-lucide="copy" class="w-3.5 h-3.5 text-champagne-300"></i>
+          <span>Copy Link</span>
+        </button>
+        <button onclick="closeQrModal()" class="py-2.5 px-3 rounded-xl btn-gold-glow text-xs font-semibold text-white transition-colors">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- SLIDE-IN NAVIGATION DRAWER                 -->
+  <!-- ========================================== -->
+  <div id="navDrawer" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden transition-opacity" onclick="toggleNavDrawer()">
+    <div class="fixed top-0 right-0 bottom-0 w-72 bg-noir-900 border-l border-champagne-400/20 p-6 flex flex-col justify-between shadow-2xl" onclick="event.stopPropagation()">
+      
+      <div>
+        <div class="flex items-center justify-between pb-6 border-b border-white/10">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-full bg-noir-800 border border-champagne-400/40 flex items-center justify-center text-xs font-bold text-champagne-300">
+              KS
+            </div>
+            <div>
+              <span class="text-xs font-bold text-slate-100 block">Kyle Santos</span>
+              <span class="text-[10px] text-champagne-400/80 font-medium uppercase tracking-wider block">Executive Menu</span>
+            </div>
+          </div>
+          <button onclick="toggleNavDrawer()" class="p-1.5 rounded-full text-slate-400 hover:text-white">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <nav class="space-y-1.5 mt-6">
+          <a href="#hero" onclick="toggleNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-slate-200 hover:text-champagne-300 text-xs font-medium transition-colors">
+            <i data-lucide="user" class="w-4 h-4 text-champagne-400"></i>
+            <span>Executive Card</span>
+          </a>
+          <a href="#ventures" onclick="toggleNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-slate-200 hover:text-champagne-300 text-xs font-medium transition-colors">
+            <i data-lucide="briefcase" class="w-4 h-4 text-champagne-400"></i>
+            <span>Ventures & Portfolio</span>
+          </a>
+          <a href="#services" onclick="toggleNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-slate-200 hover:text-champagne-300 text-xs font-medium transition-colors">
+            <i data-lucide="sparkles" class="w-4 h-4 text-champagne-400"></i>
+            <span>Capabilities & Services</span>
+          </a>
+          <a href="#consultation" onclick="toggleNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-slate-200 hover:text-champagne-300 text-xs font-medium transition-colors">
+            <i data-lucide="calendar" class="w-4 h-4 text-champagne-400"></i>
+            <span>Inquiry & Consultation</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="space-y-2 pt-6 border-t border-white/10">
+        <button onclick="downloadVCard()" class="w-full py-2.5 px-4 rounded-xl btn-gold-glow text-xs font-semibold text-white flex items-center justify-center gap-2">
+          <i data-lucide="download" class="w-3.5 h-3.5 text-champagne-300"></i>
+          <span>Download vCard</span>
+        </button>
+        <button onclick="openQrModal(); toggleNavDrawer();" class="w-full py-2.5 px-4 rounded-xl glass-tile text-xs font-semibold text-slate-300 hover:text-white flex items-center justify-center gap-2">
+          <i data-lucide="qr-code" class="w-3.5 h-3.5 text-champagne-300"></i>
+          <span>Show QR Code</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2.5 rounded-full bg-noir-850 border border-champagne-400/40 text-xs font-medium text-slate-100 shadow-2xl backdrop-blur-xl z-50 hidden items-center gap-2 transition-all">
+    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+    <span id="toastMsg">Action completed</span>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- CLIENT JAVASCRIPT & CONFIGURATION          -->
+  <!-- ========================================== -->
+  <script>
+    // ----------------------------------------------------
+    // EXECUTIVE PROFILE CONFIGURATION
+    // (Kyle can customize all fields easily right here)
+    // ----------------------------------------------------
+    const CONFIG = {
+      fullName: "Kyle Santos",
+      title: "Entrepreneur & Multi-Business Owner",
+      subtitle: "Digital Solutions, NFC Systems & Multi-Venture Leadership",
+      company: "TapAndGo / Santos Group",
+      phone: "+639194850794",
+      rawPhone: "09194850794",
+      email: "kylesantos0411@gmail.com",
+      website: window.location.origin,
+      partner: {
+        name: "Charls Andrada",
+        url: "https://tapandgo.cards/charls"
+      },
+      socials: {
+        linkedin: "https://www.linkedin.com/in/kyle-nero-santos-14287b349",
+        facebook: "https://www.facebook.com/share/1C7PU3sCpu/?mibextid=wwXIfr",
+        instagram: "https://www.instagram.com/kaiipuccino"
+      },
+      note: "Kyle Santos — Entrepreneur & Multi-Business Owner. Direct inquiries: kylesantos0411@gmail.com | +639194850794."
+    };
+
+    // Auto-update copyright year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // ----------------------------------------------------
+    // DYNAMIC VCARD (.VCF) DOWNLOADER
+    // ----------------------------------------------------
+    function downloadVCard() {
+      const vcardContent = [
+        "BEGIN:VCARD",
+        "VERSION:3.0",
+        `FN:${CONFIG.fullName}`,
+        "N:Santos;Kyle;;;",
+        `ORG:${CONFIG.company}`,
+        `TITLE:${CONFIG.title}`,
+        `TEL;TYPE=CELL,VOICE:${CONFIG.phone}`,
+        `EMAIL;TYPE=WORK,INTERNET:${CONFIG.email}`,
+        `URL:${CONFIG.website || window.location.href}`,
+        `URL;type=LinkedIn:${CONFIG.socials.linkedin}`,
+        `NOTE:${CONFIG.note}`,
+        "END:VCARD"
+      ].join("\r\n");
+
+      const blob = new Blob([vcardContent], { type: "text/vcard;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const tempLink = document.createElement("a");
+      tempLink.href = url;
+      tempLink.setAttribute("download", `Kyle_Santos_Contact.vcf`);
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      document.body.removeChild(tempLink);
+      URL.revokeObjectURL(url);
+
+      showToast("Contact card (.vcf) downloaded to your phone!");
+    }
+
+    // ----------------------------------------------------
+    // SHARE CARD VIA NATIVE SHARE API OR CLIPBOARD
+    // ----------------------------------------------------
+    async function shareProfile() {
+      const shareData = {
+        title: `${CONFIG.fullName} — Executive Card`,
+        text: `${CONFIG.fullName} — Entrepreneur & Multi-Business Owner`,
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+        } catch (err) {
+          // User dismissed or unsupported
+        }
+      } else {
+        copyCurrentUrl();
+      }
+    }
+
+    function copyCurrentUrl() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        showToast("Link copied to clipboard!");
+      }).catch(() => {
+        showToast("Link ready: " + window.location.href);
+      });
+    }
+
+    // ----------------------------------------------------
+    // QR CODE MODAL HANDLING
+    // ----------------------------------------------------
+    let qrRendered = false;
+    function openQrModal() {
+      const modal = document.getElementById("qrModal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+
+      if (!qrRendered) {
+        const qrContainer = document.getElementById("qrcode");
+        qrContainer.innerHTML = "";
+        new QRCode(qrContainer, {
+          text: window.location.href,
+          width: 170,
+          height: 170,
+          colorDark: "#0c0e14",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+        qrRendered = true;
+      }
+    }
+
+    function closeQrModal(event) {
+      const modal = document.getElementById("qrModal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    // ----------------------------------------------------
+    // SLIDE DRAWER
+    // ----------------------------------------------------
+    function toggleNavDrawer() {
+      const drawer = document.getElementById("navDrawer");
+      drawer.classList.toggle("hidden");
+    }
+
+    // ----------------------------------------------------
+    // TOAST DISPLAY HELPER
+    // ----------------------------------------------------
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      const toastMsg = document.getElementById("toastMsg");
+      toastMsg.textContent = message;
+      toast.classList.remove("hidden");
+      toast.classList.add("flex");
+
+      setTimeout(() => {
+        toast.classList.add("hidden");
+        toast.classList.remove("flex");
+      }, 3200);
+    }
+
+    // ----------------------------------------------------
+    // INQUIRY FORM SUBMISSION (Dispatches email or chat)
+    // ----------------------------------------------------
+    function handleInquiry(e) {
+      e.preventDefault();
+      const name = document.getElementById("senderName").value;
+      const company = document.getElementById("senderCompany").value;
+      const interest = document.getElementById("inquiryType").value;
+      const message = document.getElementById("senderMessage").value;
+
+      const subject = encodeURIComponent(`Executive Consultation Inquiry: ${interest} - ${name}`);
+      const body = encodeURIComponent(
+        `Hello Kyle,\n\nI would like to inquire about ${interest}.\n\nName: ${name}\nCompany: ${company || 'N/A'}\n\nProject Details:\n${message}\n\nBest regards,\n${name}`
+      );
+
+      // Open email client with pre-filled message
+      window.location.href = `mailto:${CONFIG.email}?subject=${subject}&body=${body}`;
+      showToast("Drafting inquiry in your email client...");
+    }
+  </script>
+</body>
+</html>
