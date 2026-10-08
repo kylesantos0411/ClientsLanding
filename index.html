@@ -455,6 +455,14 @@
   <!-- ========================================== -->
   <script>
     // -------------------------------------------------------------------------
+    // WORLDWIDE CLOUD DATABASE SYNC (SUPABASE)
+    // -------------------------------------------------------------------------
+    const CLOUD_SYNC = {
+      supabaseUrl: "", // e.g. "https://xyzcompany.supabase.co"
+      supabaseKey: ""  // e.g. "eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+    };
+
+    // -------------------------------------------------------------------------
     // CLIENTS REGISTRY ("ONE FOR ALL" SYSTEM)
     // Add your clients here! When they visit yourdomain.com/slug or ?c=slug,
     // their profile, contact details, and appointment email load automatically.
@@ -667,8 +675,8 @@
 
     // Asynchronous Cloud Check (Supabase) if configured
     async function checkCloudProfile() {
-      const sbUrl = localStorage.getItem("tag_supabase_url") || window.SUPABASE_URL;
-      const sbKey = localStorage.getItem("tag_supabase_key") || window.SUPABASE_KEY;
+      const sbUrl = (typeof CLOUD_SYNC !== 'undefined' && CLOUD_SYNC.supabaseUrl) ? CLOUD_SYNC.supabaseUrl : (localStorage.getItem("tag_supabase_url") || window.SUPABASE_URL);
+      const sbKey = (typeof CLOUD_SYNC !== 'undefined' && CLOUD_SYNC.supabaseKey) ? CLOUD_SYNC.supabaseKey : (localStorage.getItem("tag_supabase_key") || window.SUPABASE_KEY);
       if (!sbUrl || !sbKey) return;
 
       const params = new URLSearchParams(window.location.search);

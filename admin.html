@@ -646,7 +646,7 @@ create policy "Public delete" on clients for delete using (true);</pre>
                     >
                   </div>
 
-                  <div class="flex items-center gap-3 pt-2">
+                  <div class="flex flex-wrap items-center gap-3 pt-2">
                     <button 
                       type="button" 
                       onclick="saveCloudConfig()" 
@@ -663,6 +663,15 @@ create policy "Public delete" on clients for delete using (true);</pre>
                     >
                       <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
                       <span>Test Connection</span>
+                    </button>
+
+                    <button 
+                      type="button" 
+                      onclick="uploadAllLocalClientsToCloud()" 
+                      class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold flex items-center gap-2"
+                    >
+                      <i data-lucide="cloud-upload" class="w-3.5 h-3.5"></i>
+                      <span>Push All Clients to Cloud</span>
                     </button>
                   </div>
                 </div>
@@ -760,6 +769,14 @@ create policy "Public delete" on clients for delete using (true);</pre>
   <!-- ========================================================================= -->
   <script>
     // -------------------------------------------------------------------------
+    // WORLDWIDE CLOUD DATABASE SYNC (SUPABASE)
+    // -------------------------------------------------------------------------
+    const CLOUD_SYNC = {
+      supabaseUrl: "", // e.g. "https://xyzcompany.supabase.co"
+      supabaseKey: ""  // e.g. "eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+    };
+
+    // -------------------------------------------------------------------------
     // DEFAULT CLIENTS SEED
     // -------------------------------------------------------------------------
     const SEED_CLIENTS = {
@@ -815,12 +832,54 @@ create policy "Public delete" on clients for delete using (true);</pre>
         authScreen.classList.add("hidden");
         dashboardScreen.classList.remove("hidden");
         loadCloudConfigIntoInputs();
+        fetchClientsFromCloud();
         renderClientsList();
         updateCodeExport();
         lucide.createIcons();
       } else {
         authScreen.classList.remove("hidden");
         dashboardScreen.classList.add("hidden");
+      }
+    }
+
+    async function fetchClientsFromCloud() {
+      const url = (typeof CLOUD_SYNC !== 'undefined' && CLOUD_SYNC.supabaseUrl) ? CLOUD_SYNC.supabaseUrl : (localStorage.getItem("tag_supabase_url") || "");
+      const key = (typeof CLOUD_SYNC !== 'undefined' && CLOUD_SYNC.supabaseKey) ? CLOUD_SYNC.supabaseKey : (localStorage.getItem("tag_supabase_key") || "");
+      if (!url || !key) return;
+
+      try {
+        const res = await fetch(`${url}/rest/v1/clients?select=*`, {
+          headers: {
+            "apikey": key,
+            "Authorization": `Bearer ${key}`
+          }
+        });
+        if (res.ok) {
+          const rows = await res.json();
+          if (rows && rows.length > 0) {
+            rows.forEach(r => {
+              clientsData[r.slug] = {
+                slug: r.slug,
+                fullName: r.full_name,
+                initials: r.initials || (r.full_name ? r.full_name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'KS'),
+                title: r.title,
+                bio: r.bio,
+                phone: r.phone,
+                email: r.email,
+                facebook: r.facebook || '',
+                instagram: r.instagram || '',
+                photoUrl: r.photo_url || ''
+              };
+            });
+            saveClientsData();
+            renderClientsList();
+            updateCodeExport();
+            updateMetrics();
+            showToast("Clients synced live from Supabase");
+          }
+        }
+      } catch (err) {
+        console.warn("Could not fetch clients from cloud:", err);
       }
     }
 
@@ -1198,9 +1257,14 @@ create policy "Public delete" on clients for delete using (true);</pre>
     // -------------------------------------------------------------------------
     // SUPABASE CLOUD DATABASE SYNC ENGINE
     // -------------------------------------------------------------------------
+    function getCloudCredentials() {
+      const url = (typeof CLOUD_SYNC !== 'undefined' && CLOUD_SYNC.supabaseUrl) ? CLOUD_SYNC.supabaseUrl : (localStorage.getItem("tag_supabase_url") || "");
+      const key = (typeof CLOUD_SYNC !== 'undefined' && CLOUD_SYNC.supabaseKey) ? CLOUD_SYNC.supabaseKey : (localStorage.getItem("tag_supabase_key") || "");
+      return { url, key };
+    }
+
     function loadCloudConfigIntoInputs() {
-      const url = localStorage.getItem("tag_supabase_url") || "";
-      const key = localStorage.getItem("tag_supabase_key") || "";
+      const { url, key } = getCloudCredentials();
       const urlEl = document.getElementById("cloudSupabaseUrl");
       const keyEl = document.getElementById("cloudSupabaseKey");
       if (urlEl) urlEl.value = url;
@@ -1212,22 +1276,25 @@ create policy "Public delete" on clients for delete using (true);</pre>
       const key = document.getElementById("cloudSupabaseKey").value.trim();
       localStorage.setItem("tag_supabase_url", url);
       localStorage.setItem("tag_supabase_key", key);
-      showToast("Cloud configuration saved");
+      showToast("Cloud credentials saved locally");
+      fetchClientsFromCloud();
     }
 
     async function testCloudConnection() {
-      const url = document.getElementById("cloudSupabaseUrl").value.trim();
-      const key = document.getElementById("cloudSupabaseKey").value.trim();
-      if (!url || !key) {
+      const { url, key } = getCloudCredentials();
+      const inputUrl = document.getElementById("cloudSupabaseUrl").value.trim() || url;
+      const inputKey = document.getElementById("cloudSupabaseKey").value.trim() || key;
+
+      if (!inputUrl || !inputKey) {
         showToast("Please enter both Supabase URL and Key first");
         return;
       }
 
       try {
-        const res = await fetch(`${url}/rest/v1/clients?select=slug&limit=1`, {
+        const res = await fetch(`${inputUrl}/rest/v1/clients?select=slug&limit=1`, {
           headers: {
-            "apikey": key,
-            "Authorization": `Bearer ${key}`
+            "apikey": inputKey,
+            "Authorization": `Bearer ${inputKey}`
           }
         });
         if (res.ok) {
@@ -1241,8 +1308,7 @@ create policy "Public delete" on clients for delete using (true);</pre>
     }
 
     async function syncClientToCloud(client) {
-      const url = localStorage.getItem("tag_supabase_url");
-      const key = localStorage.getItem("tag_supabase_key");
+      const { url, key } = getCloudCredentials();
       if (!url || !key) return; // Cloud not enabled
 
       try {
@@ -1272,9 +1338,29 @@ create policy "Public delete" on clients for delete using (true);</pre>
       }
     }
 
+    async function uploadAllLocalClientsToCloud() {
+      const { url, key } = getCloudCredentials();
+      if (!url || !key) {
+        showToast("Please enter and save your Supabase credentials first");
+        return;
+      }
+
+      const slugs = Object.keys(clientsData);
+      if (slugs.length === 0) {
+        showToast("No clients to upload");
+        return;
+      }
+
+      let count = 0;
+      for (const slug of slugs) {
+        await syncClientToCloud(clientsData[slug]);
+        count++;
+      }
+      showToast(`Successfully uploaded ${count} clients to Supabase!`);
+    }
+
     async function deleteClientFromCloud(slug) {
-      const url = localStorage.getItem("tag_supabase_url");
-      const key = localStorage.getItem("tag_supabase_key");
+      const { url, key } = getCloudCredentials();
       if (!url || !key) return;
 
       try {
