@@ -44,6 +44,13 @@
   </script>
 
   <style>
+    :root {
+      --accent-color: #14161B;
+      --accent-hover: #000000;
+      --accent-ring: linear-gradient(135deg, #E6E1D8 0%, #CAC3B6 100%);
+      --accent-text: #FFFFFF;
+    }
+
     body {
       background-color: #F5F3EF;
       color: #14161B;
@@ -51,6 +58,57 @@
       -webkit-font-smoothing: antialiased;
       -webkit-tap-highlight-color: transparent;
       overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Executive Dark Mode */
+    body.theme-dark {
+      background-color: #0E1014;
+      color: #F3F4F6;
+    }
+    body.theme-dark #pageFrame {
+      background-color: #0E1014 !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.5) !important;
+    }
+    body.theme-dark .clean-card {
+      background: #171A21 !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
+      color: #F3F4F6 !important;
+    }
+    body.theme-dark .clean-card:hover {
+      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5) !important;
+    }
+    body.theme-dark .clean-card * {
+      color: #F3F4F6;
+    }
+    body.theme-dark .text-dark {
+      color: #F3F4F6 !important;
+    }
+    body.theme-dark .text-slate-800,
+    body.theme-dark .text-slate-700 {
+      color: #E5E7EB !important;
+    }
+    body.theme-dark .text-slate-600,
+    body.theme-dark .text-slate-500 {
+      color: #9CA3AF !important;
+    }
+    body.theme-dark footer {
+      background-color: rgba(23, 26, 33, 0.6) !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+    body.theme-dark input,
+    body.theme-dark textarea {
+      background-color: #12141A !important;
+      color: #F3F4F6 !important;
+      border-color: rgba(255, 255, 255, 0.12) !important;
+    }
+    body.theme-dark .border-black\/\[0\.06\],
+    body.theme-dark .border-black\/\[0\.08\] {
+      border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+    body.theme-dark .bg-\[\#F5F3EF\] {
+      background-color: #0E1014 !important;
     }
 
     .clean-card {
@@ -68,13 +126,13 @@
     }
 
     .btn-dark-pill {
-      background: #14161B;
-      color: #FFFFFF;
+      background: var(--accent-color, #14161B) !important;
+      color: var(--accent-text, #FFFFFF) !important;
       box-shadow: 0 4px 16px rgba(20, 22, 27, 0.15);
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .btn-dark-pill:hover {
-      background: #000000;
+      filter: brightness(0.9);
       box-shadow: 0 6px 20px rgba(20, 22, 27, 0.22);
       transform: translateY(-1px);
     }
@@ -83,9 +141,19 @@
     }
 
     .avatar-bevel-ring {
-      background: linear-gradient(135deg, #E6E1D8 0%, #CAC3B6 100%);
+      background: var(--accent-ring, linear-gradient(135deg, #E6E1D8 0%, #CAC3B6 100%)) !important;
       padding: 5px;
       box-shadow: 0 10px 25px -5px rgba(20, 22, 27, 0.12), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+      transition: background 0.3s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .shake-anim {
+      animation: shake 0.4s ease-in-out;
     }
 
     /* Scrollbar */
@@ -93,7 +161,7 @@
       width: 5px;
     }
     ::-webkit-scrollbar-track {
-      background: #F5F3EF;
+      background: transparent;
     }
     ::-webkit-scrollbar-thumb {
       background: #D5CEBF;
@@ -104,7 +172,7 @@
 <body class="min-h-screen text-dark flex flex-col items-center justify-start py-0 sm:py-6 sm:px-4">
 
   <!-- Mobile Screen Container Frame (Max 430px wide) -->
-  <div class="w-full max-w-[430px] min-h-screen sm:min-h-0 bg-[#F5F3EF] sm:rounded-[44px] sm:border sm:border-black/[0.08] sm:shadow-[0_24px_70px_rgba(0,0,0,0.12)] flex flex-col relative overflow-hidden">
+  <div id="pageFrame" class="w-full max-w-[430px] min-h-screen sm:min-h-0 bg-[#F5F3EF] sm:rounded-[44px] sm:border sm:border-black/[0.08] sm:shadow-[0_24px_70px_rgba(0,0,0,0.12)] flex flex-col relative overflow-hidden transition-colors duration-300">
     
     <!-- ========================================== -->
     <!-- 1. TOP HEADER BAR                          -->
@@ -346,7 +414,12 @@
         <span>&bull;</span>
         <a href="#appointment" class="hover:text-dark transition-colors">Book Meeting</a>
         <span>&bull;</span>
-        <a href="#hero" class="hover:text-dark transition-colors">Back to top</a>
+        <button onclick="openPinModal()" class="hover:text-dark transition-colors flex items-center gap-1.5">
+          <i data-lucide="palette" class="w-3 h-3 text-slate-400"></i>
+          <span>Customize</span>
+        </button>
+        <span>&bull;</span>
+        <a href="#hero" class="hover:text-dark transition-colors">Top</a>
       </div>
 
       <p class="text-[10px] text-slate-400">
@@ -425,6 +498,13 @@
             <i data-lucide="calendar" class="w-4 h-4 text-slate-600"></i>
             <span>Request Appointment</span>
           </a>
+          <button onclick="toggleNavDrawer(); openPinModal();" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-white text-dark text-xs font-semibold transition-colors text-left">
+            <div class="flex items-center gap-3">
+              <i data-lucide="palette" class="w-4 h-4 text-slate-600"></i>
+              <span>Customize This Page</span>
+            </div>
+            <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400"></i>
+          </button>
         </nav>
       </div>
 
@@ -436,6 +516,216 @@
         <button onclick="openQrModal(); toggleNavDrawer();" class="w-full py-2.5 px-4 rounded-xl bg-white border border-black/[0.06] text-xs font-bold text-dark hover:bg-slate-50 flex items-center justify-center gap-2">
           <i data-lucide="qr-code" class="w-3.5 h-3.5"></i>
           <span>Show QR Code</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- MODAL: CLIENT PIN VERIFICATION             -->
+  <!-- ========================================== -->
+  <div id="pinModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4" onclick="closePinModal(event)">
+    <div id="pinModalCard" class="bg-white rounded-3xl p-6 max-w-xs w-full text-center space-y-4 shadow-2xl border border-black/5" onclick="event.stopPropagation()">
+      <div class="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto text-dark shadow-inner">
+        <i data-lucide="lock" class="w-6 h-6 stroke-[1.8]"></i>
+      </div>
+      <div>
+        <h3 class="text-base font-bold text-dark">Page Owner Access</h3>
+        <p class="text-xs text-slate-500 mt-1">Enter your client PIN to customize your design, links, and contact info.</p>
+      </div>
+
+      <form onsubmit="handleVerifyPin(event)" class="space-y-3 pt-1">
+        <div class="relative">
+          <input 
+            type="password" 
+            id="clientPinInput" 
+            required 
+            maxlength="8" 
+            placeholder="••••" 
+            class="w-full text-center tracking-[0.3em] font-mono text-lg font-bold py-2.5 px-4 rounded-xl bg-[#F5F3EF] border border-black/[0.08] text-dark focus:outline-none focus:border-dark"
+          />
+        </div>
+        <p id="pinError" class="text-rose-500 text-[11px] font-semibold hidden flex items-center justify-center gap-1">
+          <i data-lucide="alert-circle" class="w-3 h-3"></i>
+          <span>Incorrect PIN. Please try again.</span>
+        </p>
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <button type="button" onclick="closePinModal()" class="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-dark transition-colors">
+            Cancel
+          </button>
+          <button type="submit" class="py-2.5 px-3 rounded-xl btn-dark-pill text-xs font-semibold text-white transition-colors">
+            Unlock & Edit
+          </button>
+        </div>
+        <p class="text-[10px] text-slate-400 pt-1">Default PIN is <span class="font-mono bg-slate-100 px-1 py-0.5 rounded text-slate-600">1234</span></p>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- SLIDE-IN CLIENT CUSTOMIZER DRAWER          -->
+  <!-- ========================================== -->
+  <div id="customizerDrawer" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden" onclick="closeCustomizerDrawer()">
+    <div class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-[#F5F3EF] border-l border-black/[0.08] p-5 sm:p-6 flex flex-col justify-between shadow-2xl overflow-y-auto" onclick="event.stopPropagation()">
+      
+      <!-- Top Bar: Title & Close -->
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-black/[0.08]">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-dark text-white flex items-center justify-center font-bold text-xs">
+              <i data-lucide="palette" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-dark">Customize Your Page</h3>
+              <p class="text-[11px] text-slate-500">Live preview active</p>
+            </div>
+          </div>
+          <button onclick="closeCustomizerDrawer()" class="p-1.5 rounded-full text-slate-500 hover:text-dark">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Navigation Tabs: Style | Info | Links | PIN -->
+        <div class="flex items-center gap-1.5 py-3 border-b border-black/[0.06] overflow-x-auto text-[11px] font-semibold">
+          <button type="button" onclick="switchCustomizerTab('style')" id="custTabBtnStyle" class="px-3 py-1.5 rounded-lg bg-dark text-white shrink-0">1. Colors & Theme</button>
+          <button type="button" onclick="switchCustomizerTab('profile')" id="custTabBtnProfile" class="px-3 py-1.5 rounded-lg bg-white text-slate-700 hover:bg-slate-100 shrink-0 border border-black/5">2. Bio & Photo</button>
+          <button type="button" onclick="switchCustomizerTab('links')" id="custTabBtnLinks" class="px-3 py-1.5 rounded-lg bg-white text-slate-700 hover:bg-slate-100 shrink-0 border border-black/5">3. Contacts & Links</button>
+          <button type="button" onclick="switchCustomizerTab('pin')" id="custTabBtnPin" class="px-3 py-1.5 rounded-lg bg-white text-slate-700 hover:bg-slate-100 shrink-0 border border-black/5">4. Secret PIN</button>
+        </div>
+
+        <!-- Forms Container -->
+        <div class="py-4 space-y-4">
+          
+          <!-- TAB 1: THEME & COLORS -->
+          <div id="custTabViewStyle" class="space-y-4">
+            <!-- Background Mode -->
+            <div>
+              <label class="block text-xs font-bold text-dark uppercase tracking-wider mb-2">Background Mode</label>
+              <div class="grid grid-cols-2 gap-2.5">
+                <button type="button" onclick="setCustomThemeMode('light')" id="btnModeLight" class="p-3 rounded-2xl border-2 border-dark bg-white text-left shadow-xs transition-all flex items-center gap-2.5">
+                  <span class="w-4 h-4 rounded-full bg-[#F5F3EF] border border-slate-300"></span>
+                  <span class="text-xs font-bold text-dark">Ivory Light</span>
+                </button>
+                <button type="button" onclick="setCustomThemeMode('dark')" id="btnModeDark" class="p-3 rounded-2xl border-2 border-transparent bg-slate-900 text-white text-left shadow-xs transition-all flex items-center gap-2.5">
+                  <span class="w-4 h-4 rounded-full bg-black border border-slate-700"></span>
+                  <span class="text-xs font-bold text-white">Executive Dark</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Color Accent Presets -->
+            <div>
+              <label class="block text-xs font-bold text-dark uppercase tracking-wider mb-2">Luxury Accent Color</label>
+              <div class="grid grid-cols-3 gap-2">
+                <!-- Obsidian -->
+                <button type="button" onclick="setCustomAccent('obsidian')" id="accent_obsidian" class="p-2.5 rounded-xl border-2 border-dark bg-white flex flex-col items-center gap-1.5 transition-all">
+                  <span class="w-6 h-6 rounded-full bg-[#14161B] shadow-sm"></span>
+                  <span class="text-[10px] font-bold text-slate-800">Obsidian</span>
+                </button>
+                <!-- Champagne Gold -->
+                <button type="button" onclick="setCustomAccent('gold')" id="accent_gold" class="p-2.5 rounded-xl border-2 border-transparent bg-white flex flex-col items-center gap-1.5 transition-all">
+                  <span class="w-6 h-6 rounded-full bg-[#B48C36] shadow-sm"></span>
+                  <span class="text-[10px] font-bold text-slate-800">Gold</span>
+                </button>
+                <!-- Emerald Green -->
+                <button type="button" onclick="setCustomAccent('emerald')" id="accent_emerald" class="p-2.5 rounded-xl border-2 border-transparent bg-white flex flex-col items-center gap-1.5 transition-all">
+                  <span class="w-6 h-6 rounded-full bg-[#059669] shadow-sm"></span>
+                  <span class="text-[10px] font-bold text-slate-800">Emerald</span>
+                </button>
+                <!-- Sapphire Navy -->
+                <button type="button" onclick="setCustomAccent('sapphire')" id="accent_sapphire" class="p-2.5 rounded-xl border-2 border-transparent bg-white flex flex-col items-center gap-1.5 transition-all">
+                  <span class="w-6 h-6 rounded-full bg-[#1D4ED8] shadow-sm"></span>
+                  <span class="text-[10px] font-bold text-slate-800">Sapphire</span>
+                </button>
+                <!-- Rose Gold -->
+                <button type="button" onclick="setCustomAccent('rose')" id="accent_rose" class="p-2.5 rounded-xl border-2 border-transparent bg-white flex flex-col items-center gap-1.5 transition-all">
+                  <span class="w-6 h-6 rounded-full bg-[#BE185D] shadow-sm"></span>
+                  <span class="text-[10px] font-bold text-slate-800">Rose Gold</span>
+                </button>
+                <!-- Amethyst -->
+                <button type="button" onclick="setCustomAccent('amethyst')" id="accent_amethyst" class="p-2.5 rounded-xl border-2 border-transparent bg-white flex flex-col items-center gap-1.5 transition-all">
+                  <span class="w-6 h-6 rounded-full bg-[#6D28D9] shadow-sm"></span>
+                  <span class="text-[10px] font-bold text-slate-800">Amethyst</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: BIO & PHOTO -->
+          <div id="custTabViewProfile" class="hidden space-y-3.5">
+            <div>
+              <label class="block text-xs font-bold text-dark uppercase tracking-wider mb-1">Full Name</label>
+              <input type="text" id="custFullName" oninput="liveUpdateProfile()" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-black/[0.08] text-xs text-dark focus:outline-none focus:border-dark" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-dark uppercase tracking-wider mb-1">Monogram Initials</label>
+              <input type="text" id="custInitials" maxlength="3" oninput="liveUpdateProfile()" class="w-20 text-center uppercase font-bold px-3 py-2 rounded-xl bg-white border border-black/[0.08] text-xs text-dark" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-dark uppercase tracking-wider mb-1">Professional Title</label>
+              <input type="text" id="custTitle" oninput="liveUpdateProfile()" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-black/[0.08] text-xs text-dark focus:outline-none focus:border-dark" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-dark uppercase tracking-wider mb-1">Company / Bio Tagline</label>
+              <textarea id="custBio" rows="2" oninput="liveUpdateProfile()" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-black/[0.08] text-xs text-dark focus:outline-none focus:border-dark"></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-dark uppercase tracking-wider mb-1">Avatar Photo URL</label>
+              <input type="url" id="custPhotoUrl" placeholder="https://... (leave blank for initials monogram)" oninput="liveUpdateProfile()" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-black/[0.08] text-xs text-dark focus:outline-none focus:border-dark" />
+              <p class="text-[10px] text-slate-400 mt-1">Leave blank to use the luxury metallic monogram ring with your initials.</p>
+            </div>
+          </div>
+
+          <!-- TAB 3: CONTACTS & LINKS -->
+          <div id="custTabViewLinks" class="hidden space-y-3.5">
+            <div>
+              <label class="block text-xs font-bold text-dark uppercase tracking-wider mb-1">Phone Number (Call & SMS)</label>
+              <input type="tel" id="custPhone" oninput="liveUpdateProfile()" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-black/[0.08] text-xs text-dark" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-dark uppercase tracking-wider mb-1">Email (Appointment Target)</label>
+              <input type="email" id="custEmail" oninput="liveUpdateProfile()" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-black/[0.08] text-xs text-dark" />
+              <p class="text-[10px] text-emerald-600 mt-0.5">Appointment bookings will be sent straight to this email.</p>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-dark uppercase tracking-wider mb-1">Facebook URL</label>
+              <input type="url" id="custFacebook" placeholder="https://facebook.com/..." oninput="liveUpdateProfile()" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-black/[0.08] text-xs text-dark" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-dark uppercase tracking-wider mb-1">Instagram URL</label>
+              <input type="url" id="custInstagram" placeholder="https://instagram.com/..." oninput="liveUpdateProfile()" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-black/[0.08] text-xs text-dark" />
+            </div>
+          </div>
+
+          <!-- TAB 4: PIN & SECURITY -->
+          <div id="custTabViewPin" class="hidden space-y-3.5">
+            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 text-xs text-amber-900 flex items-start gap-2">
+              <i data-lucide="shield" class="w-4 h-4 text-amber-600 mt-0.5 shrink-0"></i>
+              <div>
+                <p class="font-bold">Protect Your Page</p>
+                <p class="text-[11px] text-amber-800 mt-0.5">This PIN prevents visitors from modifying your landing page when they scan your NFC card.</p>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-dark uppercase tracking-wider mb-1">New 4-Digit Secret PIN</label>
+              <input type="password" id="custPinNew" maxlength="8" placeholder="••••" class="w-full font-mono text-center tracking-widest text-base font-bold px-3.5 py-2.5 rounded-xl bg-white border border-black/[0.08] text-dark" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Footer Action: Save Changes -->
+      <div class="pt-4 border-t border-black/[0.08] space-y-2">
+        <button type="button" onclick="saveClientCustomization()" id="btnSaveCustomization" class="w-full py-3.5 px-4 rounded-2xl btn-dark-pill text-xs font-bold flex items-center justify-center gap-2 shadow-lg">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          <span id="btnSaveCustomText">Save Changes Live</span>
+        </button>
+        <button type="button" onclick="closeCustomizerDrawer()" class="w-full py-2 text-center text-xs font-semibold text-slate-500 hover:text-dark">
+          Cancel
         </button>
       </div>
 
@@ -526,6 +816,72 @@
     };
 
     // -------------------------------------------------------------------------
+    // LUXURY ACCENT COLOR PRESETS & THEME ENGINE
+    // -------------------------------------------------------------------------
+    const ACCENT_PRESETS = {
+      obsidian: {
+        color: '#14161B',
+        hover: '#000000',
+        ring: 'linear-gradient(135deg, #E6E1D8 0%, #CAC3B6 100%)',
+        text: '#FFFFFF'
+      },
+      gold: {
+        color: '#B48C36',
+        hover: '#946E20',
+        ring: 'linear-gradient(135deg, #F9F2DD 0%, #D4AF37 100%)',
+        text: '#FFFFFF'
+      },
+      emerald: {
+        color: '#059669',
+        hover: '#047857',
+        ring: 'linear-gradient(135deg, #D1FAE5 0%, #10B981 100%)',
+        text: '#FFFFFF'
+      },
+      sapphire: {
+        color: '#1D4ED8',
+        hover: '#1E40AF',
+        ring: 'linear-gradient(135deg, #DBEAFE 0%, #3B82F6 100%)',
+        text: '#FFFFFF'
+      },
+      rose: {
+        color: '#BE185D',
+        hover: '#9D174D',
+        ring: 'linear-gradient(135deg, #FCE7F3 0%, #EC4899 100%)',
+        text: '#FFFFFF'
+      },
+      amethyst: {
+        color: '#6D28D9',
+        hover: '#5B21B6',
+        ring: 'linear-gradient(135deg, #EDE9FE 0%, #8B5CF6 100%)',
+        text: '#FFFFFF'
+      }
+    };
+
+    function applyTheme(accentKey = 'obsidian', mode = 'light') {
+      const preset = ACCENT_PRESETS[accentKey] || ACCENT_PRESETS['obsidian'];
+      const root = document.documentElement;
+      root.style.setProperty('--accent-color', preset.color);
+      root.style.setProperty('--accent-hover', preset.hover);
+      root.style.setProperty('--accent-ring', preset.ring);
+      root.style.setProperty('--accent-text', preset.text);
+
+      const headerInitials = document.getElementById("headerInitials");
+      if (headerInitials) headerInitials.style.backgroundColor = preset.color;
+
+      const footerInitials = document.getElementById("footerInitials");
+      if (footerInitials) footerInitials.style.backgroundColor = preset.color;
+
+      const drawerInitials = document.getElementById("drawerInitials");
+      if (drawerInitials) drawerInitials.style.backgroundColor = preset.color;
+
+      if (mode === 'dark') {
+        document.body.classList.add('theme-dark');
+      } else {
+        document.body.classList.remove('theme-dark');
+      }
+    }
+
+    // -------------------------------------------------------------------------
     // RESOLVE ACTIVE CLIENT FROM URL
     // Supports:
     // 1. ?c=slug or ?client=slug (e.g. ?c=alexander)
@@ -556,21 +912,31 @@
         if (cached) localRegistry = JSON.parse(cached);
       } catch (e) {}
 
+      // Check for locally cached client customization
+      let customOverride = {};
+      try {
+        const cachedCust = localStorage.getItem(`tag_cust_${slug}`);
+        if (cachedCust) customOverride = JSON.parse(cachedCust);
+      } catch (e) {}
+
       const allClients = { ...CLIENTS, ...localRegistry };
       const base = allClients[slug] || allClients['default'] || CLIENTS['default'];
 
       // Allow on-the-fly URL parameter overrides for instant client preview
       return {
         slug: slug,
-        fullName: params.get('name') || base.fullName,
-        initials: params.get('initials') || base.initials || (base.fullName ? base.fullName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'KS'),
-        title: params.get('title') || base.title,
-        bio: params.get('bio') || base.bio,
-        phone: params.get('phone') || base.phone,
-        email: params.get('email') || base.email,
-        facebook: params.has('fb') ? params.get('fb') : base.facebook,
-        instagram: params.has('ig') ? params.get('ig') : base.instagram,
-        photoUrl: params.get('photo') || base.photoUrl || ''
+        fullName: params.get('name') || customOverride.fullName || base.fullName,
+        initials: params.get('initials') || customOverride.initials || base.initials || (base.fullName ? base.fullName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'KS'),
+        title: params.get('title') || customOverride.title || base.title,
+        bio: params.get('bio') || customOverride.bio || base.bio,
+        phone: params.get('phone') || customOverride.phone || base.phone,
+        email: params.get('email') || customOverride.email || base.email,
+        facebook: params.has('fb') ? params.get('fb') : (customOverride.facebook !== undefined ? customOverride.facebook : base.facebook),
+        instagram: params.has('ig') ? params.get('ig') : (customOverride.instagram !== undefined ? customOverride.instagram : base.instagram),
+        photoUrl: params.get('photo') || customOverride.photoUrl || base.photoUrl || '',
+        themeAccent: params.get('accent') || customOverride.themeAccent || base.themeAccent || 'obsidian',
+        themeMode: params.get('mode') || customOverride.themeMode || base.themeMode || 'light',
+        pin: customOverride.pin || base.pin || '1234'
       };
     }
 
@@ -669,6 +1035,9 @@
 
       const footerCopyright = document.getElementById("footerCopyright");
       if (footerCopyright) footerCopyright.textContent = client.fullName;
+
+      // 9. Apply Luxury Accent & Background Theme
+      applyTheme(client.themeAccent || 'obsidian', client.themeMode || 'light');
     }
 
     // Run dynamic render
@@ -712,7 +1081,10 @@
               email: row.email,
               facebook: row.facebook || '',
               instagram: row.instagram || '',
-              photoUrl: row.photo_url || ''
+              photoUrl: row.photo_url || '',
+              themeAccent: row.theme_accent || activeClient.themeAccent || 'obsidian',
+              themeMode: row.theme_mode || activeClient.themeMode || 'light',
+              pin: row.pin || activeClient.pin || '1234'
             };
             renderClientProfile(activeClient);
           }
@@ -728,6 +1100,268 @@
 
     // Initialize Lucide Icons
     lucide.createIcons();
+
+    // ----------------------------------------------------
+    // CLIENT PIN VERIFICATION & CUSTOMIZER CONTROLS
+    // ----------------------------------------------------
+    function openPinModal() {
+      // If already authenticated this session for this client
+      if (sessionStorage.getItem(`tag_auth_${activeClient.slug}`) === 'true') {
+        openCustomizerDrawer();
+        return;
+      }
+      const modal = document.getElementById("pinModal");
+      const input = document.getElementById("clientPinInput");
+      const err = document.getElementById("pinError");
+      if (err) err.classList.add("hidden");
+      if (input) input.value = "";
+      if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+        setTimeout(() => input && input.focus(), 100);
+      }
+    }
+
+    function closePinModal(event) {
+      const modal = document.getElementById("pinModal");
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+    }
+
+    function handleVerifyPin(e) {
+      e.preventDefault();
+      const entered = (document.getElementById("clientPinInput").value || "").trim();
+      const correctPin = String(activeClient.pin || "1234").trim();
+      const masterPass = "tapandgo2026"; // Master super-pin override
+
+      if (entered === correctPin || entered === masterPass) {
+        sessionStorage.setItem(`tag_auth_${activeClient.slug}`, "true");
+        closePinModal();
+        openCustomizerDrawer();
+        showToast("Unlocked! You can now customize your page.");
+      } else {
+        const err = document.getElementById("pinError");
+        const card = document.getElementById("pinModalCard");
+        if (err) err.classList.remove("hidden");
+        if (card) {
+          card.classList.add("shake-anim", "border-rose-400");
+          setTimeout(() => card.classList.remove("shake-anim", "border-rose-400"), 600);
+        }
+      }
+    }
+
+    function openCustomizerDrawer() {
+      const drawer = document.getElementById("customizerDrawer");
+      if (!drawer) return;
+
+      // Populate inputs
+      const fn = document.getElementById("custFullName");
+      const init = document.getElementById("custInitials");
+      const tit = document.getElementById("custTitle");
+      const bio = document.getElementById("custBio");
+      const photo = document.getElementById("custPhotoUrl");
+      const ph = document.getElementById("custPhone");
+      const em = document.getElementById("custEmail");
+      const fb = document.getElementById("custFacebook");
+      const ig = document.getElementById("custInstagram");
+      const pin = document.getElementById("custPinNew");
+
+      if (fn) fn.value = activeClient.fullName || "";
+      if (init) init.value = activeClient.initials || "";
+      if (tit) tit.value = activeClient.title || "";
+      if (bio) bio.value = activeClient.bio || "";
+      if (photo) photo.value = activeClient.photoUrl || "";
+      if (ph) ph.value = activeClient.phone || "";
+      if (em) em.value = activeClient.email || "";
+      if (fb) fb.value = activeClient.facebook || "";
+      if (ig) ig.value = activeClient.instagram || "";
+      if (pin) pin.value = activeClient.pin || "1234";
+
+      // Highlight active mode & accent
+      highlightModeButtons(activeClient.themeMode || 'light');
+      highlightAccentButtons(activeClient.themeAccent || 'obsidian');
+
+      drawer.classList.remove("hidden");
+      lucide.createIcons();
+    }
+
+    function closeCustomizerDrawer() {
+      const drawer = document.getElementById("customizerDrawer");
+      if (drawer) drawer.classList.add("hidden");
+    }
+
+    function switchCustomizerTab(tabId) {
+      const tabs = ['style', 'profile', 'links', 'pin'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`custTabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
+        const view = document.getElementById(`custTabView${t.charAt(0).toUpperCase() + t.slice(1)}`);
+        if (t === tabId) {
+          if (view) view.classList.remove("hidden");
+          if (btn) {
+            btn.className = "px-3 py-1.5 rounded-lg bg-dark text-white shrink-0";
+          }
+        } else {
+          if (view) view.classList.add("hidden");
+          if (btn) {
+            btn.className = "px-3 py-1.5 rounded-lg bg-white text-slate-700 hover:bg-slate-100 shrink-0 border border-black/5";
+          }
+        }
+      });
+      lucide.createIcons();
+    }
+
+    function setCustomThemeMode(mode) {
+      activeClient.themeMode = mode;
+      highlightModeButtons(mode);
+      applyTheme(activeClient.themeAccent, mode);
+    }
+
+    function highlightModeButtons(mode) {
+      const btnLight = document.getElementById("btnModeLight");
+      const btnDark = document.getElementById("btnModeDark");
+      if (mode === 'dark') {
+        if (btnLight) btnLight.className = "p-3 rounded-2xl border-2 border-transparent bg-white text-left shadow-xs transition-all flex items-center gap-2.5";
+        if (btnDark) btnDark.className = "p-3 rounded-2xl border-2 border-amber-400 bg-slate-900 text-white text-left shadow-xs transition-all flex items-center gap-2.5";
+      } else {
+        if (btnLight) btnLight.className = "p-3 rounded-2xl border-2 border-dark bg-white text-left shadow-xs transition-all flex items-center gap-2.5";
+        if (btnDark) btnDark.className = "p-3 rounded-2xl border-2 border-transparent bg-slate-900 text-white text-left shadow-xs transition-all flex items-center gap-2.5";
+      }
+    }
+
+    function setCustomAccent(accentKey) {
+      activeClient.themeAccent = accentKey;
+      highlightAccentButtons(accentKey);
+      applyTheme(accentKey, activeClient.themeMode);
+    }
+
+    function highlightAccentButtons(accentKey) {
+      const presets = ['obsidian', 'gold', 'emerald', 'sapphire', 'rose', 'amethyst'];
+      presets.forEach(p => {
+        const btn = document.getElementById(`accent_${p}`);
+        if (!btn) return;
+        if (p === accentKey) {
+          btn.classList.add("border-dark", "scale-105");
+          btn.classList.remove("border-transparent");
+        } else {
+          btn.classList.remove("border-dark", "scale-105");
+          btn.classList.add("border-transparent");
+        }
+      });
+    }
+
+    function liveUpdateProfile() {
+      const fn = document.getElementById("custFullName");
+      const init = document.getElementById("custInitials");
+      const tit = document.getElementById("custTitle");
+      const bio = document.getElementById("custBio");
+      const photo = document.getElementById("custPhotoUrl");
+      const ph = document.getElementById("custPhone");
+      const em = document.getElementById("custEmail");
+      const fb = document.getElementById("custFacebook");
+      const ig = document.getElementById("custInstagram");
+
+      if (fn && fn.value) activeClient.fullName = fn.value.trim();
+      if (init && init.value) activeClient.initials = init.value.trim().toUpperCase();
+      if (tit) activeClient.title = tit.value.trim();
+      if (bio) activeClient.bio = bio.value.trim();
+      if (photo) activeClient.photoUrl = photo.value.trim();
+      if (ph) activeClient.phone = ph.value.trim();
+      if (em) activeClient.email = em.value.trim();
+      if (fb) activeClient.facebook = fb.value.trim();
+      if (ig) activeClient.instagram = ig.value.trim();
+
+      renderClientProfile(activeClient);
+    }
+
+    async function saveClientCustomization() {
+      const btn = document.getElementById("btnSaveCustomization");
+      const btnText = document.getElementById("btnSaveCustomText");
+      btn.disabled = true;
+      btnText.textContent = "Saving Changes...";
+
+      // Read final inputs
+      liveUpdateProfile();
+      const newPinInput = document.getElementById("custPinNew");
+      if (newPinInput && newPinInput.value.trim().length >= 4) {
+        activeClient.pin = newPinInput.value.trim();
+      }
+
+      // 1. Save locally for instant persistence
+      localStorage.setItem(`tag_cust_${activeClient.slug}`, JSON.stringify(activeClient));
+
+      // 2. Sync to Supabase
+      const sbUrl = (typeof CLOUD_SYNC !== 'undefined' && CLOUD_SYNC.supabaseUrl) ? CLOUD_SYNC.supabaseUrl : localStorage.getItem("tag_supabase_url");
+      const sbKey = (typeof CLOUD_SYNC !== 'undefined' && CLOUD_SYNC.supabaseKey) ? CLOUD_SYNC.supabaseKey : localStorage.getItem("tag_supabase_key");
+
+      if (sbUrl && sbKey) {
+        try {
+          // Attempt full payload
+          const fullPayload = {
+            full_name: activeClient.fullName,
+            initials: activeClient.initials,
+            title: activeClient.title,
+            bio: activeClient.bio,
+            phone: activeClient.phone,
+            email: activeClient.email,
+            facebook: activeClient.facebook,
+            instagram: activeClient.instagram,
+            photo_url: activeClient.photoUrl,
+            theme_accent: activeClient.themeAccent,
+            theme_mode: activeClient.themeMode,
+            pin: activeClient.pin
+          };
+
+          const res = await fetch(`${sbUrl}/rest/v1/clients?slug=eq.${encodeURIComponent(activeClient.slug)}`, {
+            method: "PATCH",
+            headers: {
+              "apikey": sbKey,
+              "Authorization": `Bearer ${sbKey}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(fullPayload)
+          });
+
+          if (!res.ok) {
+            // Fallback to core columns if extra columns not in Postgres yet
+            const corePayload = {
+              full_name: activeClient.fullName,
+              initials: activeClient.initials,
+              title: activeClient.title,
+              bio: activeClient.bio,
+              phone: activeClient.phone,
+              email: activeClient.email,
+              facebook: activeClient.facebook,
+              instagram: activeClient.instagram,
+              photo_url: activeClient.photoUrl
+            };
+            await fetch(`${sbUrl}/rest/v1/clients?slug=eq.${encodeURIComponent(activeClient.slug)}`, {
+              method: "PATCH",
+              headers: {
+                "apikey": sbKey,
+                "Authorization": `Bearer ${sbKey}`,
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(corePayload)
+            });
+          }
+        } catch (err) {
+          console.warn("Could not save to Supabase:", err);
+        }
+      }
+
+      btn.disabled = false;
+      btnText.textContent = "Save Changes Live";
+      closeCustomizerDrawer();
+      showToast("Your customizations have been published live!");
+    }
+
+    // Auto open PIN modal if ?customize or ?edit in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('customize') || urlParams.has('edit')) {
+      setTimeout(() => openPinModal(), 500);
+    }
 
     // ----------------------------------------------------
     // SHARE CARD

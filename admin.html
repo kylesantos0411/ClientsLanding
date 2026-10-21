@@ -441,17 +441,32 @@
                 </div>
               </div>
 
-              <!-- Photo URL (Optional) -->
-              <div class="pt-1">
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Avatar Photo URL (Optional)</label>
-                <input 
-                  type="url" 
-                  id="inputPhotoUrl" 
-                  placeholder="https://.../photo.jpg (leave blank for silver monogram ring)" 
-                  oninput="updateLivePreview()" 
-                  class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-xs text-[#1C1E21] focus:ring-2 focus:ring-slate-800"
-                >
-                <p class="text-[10px] text-slate-400 mt-1">Leave empty to use the luxury silver monogram ring with client initials.</p>
+              <!-- Photo URL & PIN -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Avatar Photo URL (Optional)</label>
+                  <input 
+                    type="url" 
+                    id="inputPhotoUrl" 
+                    placeholder="https://.../photo.jpg (leave blank for silver monogram ring)" 
+                    oninput="updateLivePreview()" 
+                    class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-xs text-[#1C1E21] focus:ring-2 focus:ring-slate-800"
+                  >
+                  <p class="text-[10px] text-slate-400 mt-1">Leave empty to use the luxury silver monogram ring with client initials.</p>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Client Secret PIN</label>
+                  <input 
+                    type="text" 
+                    id="inputPin" 
+                    maxlength="8" 
+                    placeholder="1234 (default)" 
+                    value="1234"
+                    class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2DC] text-xs font-mono font-bold text-[#1C1E21] focus:ring-2 focus:ring-slate-800"
+                  >
+                  <p class="text-[10px] text-slate-400 mt-1">Client uses this to unlock page customization</p>
+                </div>
               </div>
 
               <!-- Action Buttons -->
@@ -613,6 +628,11 @@
   facebook text,
   instagram text,
   photo_url text,
+  pin text default '1234',
+  theme_accent text default 'obsidian',
+  theme_mode text default 'light',
+  whatsapp text default '',
+  website text default '',
   created_at timestamp default now()
 );
 alter table clients enable row level security;
@@ -867,7 +887,12 @@ create policy "Public delete" on clients for delete using (true);</pre>
                 email: r.email,
                 facebook: r.facebook || '',
                 instagram: r.instagram || '',
-                photoUrl: r.photo_url || ''
+                photoUrl: r.photo_url || '',
+                pin: r.pin || '1234',
+                themeAccent: r.theme_accent || 'obsidian',
+                themeMode: r.theme_mode || 'light',
+                whatsapp: r.whatsapp || '',
+                website: r.website || ''
               };
             });
             saveClientsData();
@@ -1035,9 +1060,14 @@ create policy "Public delete" on clients for delete using (true);</pre>
                 <p class="text-[11px] text-[#71717A]">${escapeHtml(client.title)}</p>
               </div>
             </div>
-            <span class="font-mono text-[10px] font-semibold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
-              /${escapeHtml(client.slug)}
-            </span>
+            <div class="flex flex-col items-end gap-1">
+              <span class="font-mono text-[10px] font-semibold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full border border-slate-200">
+                /${escapeHtml(client.slug)}
+              </span>
+              <span class="font-mono text-[9px] font-bold bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200" title="Client Secret PIN">
+                PIN: ${escapeHtml(client.pin || '1234')}
+              </span>
+            </div>
           </div>
 
           <!-- Bio -->
@@ -1134,6 +1164,8 @@ create policy "Public delete" on clients for delete using (true);</pre>
       document.getElementById("inputFacebook").value = client.facebook || "";
       document.getElementById("inputInstagram").value = client.instagram || "";
       document.getElementById("inputPhotoUrl").value = client.photoUrl || "";
+      const pinEl = document.getElementById("inputPin");
+      if (pinEl) pinEl.value = client.pin || "1234";
 
       updateLivePreview();
       switchTab('add');
@@ -1145,6 +1177,8 @@ create policy "Public delete" on clients for delete using (true);</pre>
       document.getElementById("formTitle").textContent = "Add New Client";
       document.getElementById("btnSaveText").textContent = "Save Client Profile";
       document.getElementById("tabAddTitle").textContent = "Add New Client";
+      const pinEl = document.getElementById("inputPin");
+      if (pinEl) pinEl.value = "1234";
       updateLivePreview();
     }
 
@@ -1207,6 +1241,8 @@ create policy "Public delete" on clients for delete using (true);</pre>
         return;
       }
 
+      const existing = clientsData[rawSlug] || (editingSlug ? clientsData[editingSlug] : null);
+
       const client = {
         slug: rawSlug,
         fullName: document.getElementById("inputFullName").value.trim(),
@@ -1217,7 +1253,12 @@ create policy "Public delete" on clients for delete using (true);</pre>
         email: document.getElementById("inputEmail").value.trim(),
         facebook: document.getElementById("inputFacebook").value.trim(),
         instagram: document.getElementById("inputInstagram").value.trim(),
-        photoUrl: document.getElementById("inputPhotoUrl").value.trim()
+        photoUrl: document.getElementById("inputPhotoUrl").value.trim(),
+        pin: (document.getElementById("inputPin") ? document.getElementById("inputPin").value.trim() : "") || (existing && existing.pin) || "1234",
+        themeAccent: (existing && existing.themeAccent) || "obsidian",
+        themeMode: (existing && existing.themeMode) || "light",
+        whatsapp: (existing && existing.whatsapp) || "",
+        website: (existing && existing.website) || ""
       };
 
       // If slug changed during edit, clean up old slug
@@ -1314,8 +1355,26 @@ create policy "Public delete" on clients for delete using (true);</pre>
       const { url, key } = getCloudCredentials();
       if (!url || !key) return; // Cloud not enabled
 
+      const fullPayload = {
+        slug: client.slug,
+        full_name: client.fullName,
+        initials: client.initials,
+        title: client.title,
+        bio: client.bio,
+        phone: client.phone,
+        email: client.email,
+        facebook: client.facebook || "",
+        instagram: client.instagram || "",
+        photo_url: client.photoUrl || "",
+        pin: client.pin || "1234",
+        theme_accent: client.themeAccent || "obsidian",
+        theme_mode: client.themeMode || "light",
+        whatsapp: client.whatsapp || "",
+        website: client.website || ""
+      };
+
       try {
-        await fetch(`${url}/rest/v1/clients`, {
+        let res = await fetch(`${url}/rest/v1/clients`, {
           method: "POST",
           headers: {
             "apikey": key,
@@ -1323,7 +1382,12 @@ create policy "Public delete" on clients for delete using (true);</pre>
             "Content-Type": "application/json",
             "Prefer": "resolution=merge-duplicates"
           },
-          body: JSON.stringify({
+          body: JSON.stringify(fullPayload)
+        });
+
+        // Graceful fallback if new columns (pin, theme, etc.) haven't been migrated in Postgres
+        if (!res.ok) {
+          const legacyPayload = {
             slug: client.slug,
             full_name: client.fullName,
             initials: client.initials,
@@ -1334,8 +1398,18 @@ create policy "Public delete" on clients for delete using (true);</pre>
             facebook: client.facebook || "",
             instagram: client.instagram || "",
             photo_url: client.photoUrl || ""
-          })
-        });
+          };
+          await fetch(`${url}/rest/v1/clients`, {
+            method: "POST",
+            headers: {
+              "apikey": key,
+              "Authorization": `Bearer ${key}`,
+              "Content-Type": "application/json",
+              "Prefer": "resolution=merge-duplicates"
+            },
+            body: JSON.stringify(legacyPayload)
+          });
+        }
       } catch (err) {
         console.warn("Cloud sync error:", err);
       }
@@ -1391,6 +1465,11 @@ create policy "Public delete" on clients for delete using (true);</pre>
   facebook text,
   instagram text,
   photo_url text,
+  pin text default '1234',
+  theme_accent text default 'obsidian',
+  theme_mode text default 'light',
+  whatsapp text default '',
+  website text default '',
   created_at timestamp default now()
 );
 alter table clients enable row level security;
