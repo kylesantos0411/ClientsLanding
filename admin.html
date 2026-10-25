@@ -825,30 +825,6 @@ create policy "Public delete" on clients for delete using (true);</pre>
         instagram: "https://www.instagram.com/kaiipuccino",
         photoUrl: "",
         pin: "1234"
-      },
-      "alexander": {
-        slug: "alexander",
-        fullName: "Alexander Vance",
-        initials: "AV",
-        title: "President & Principal Architect",
-        bio: "Architecture & Structural Engineering • Luxury Residential Design",
-        phone: "+639171234567",
-        email: "alexander@vancestudio.com",
-        facebook: "https://facebook.com/vancestudio",
-        instagram: "https://instagram.com/vancestudio",
-        photoUrl: ""
-      },
-      "maria": {
-        slug: "maria",
-        fullName: "Atty. Maria Santos",
-        initials: "MS",
-        title: "Managing Legal Partner",
-        bio: "Corporate law, contract scaffolding, and executive advisory.",
-        phone: "+639189876543",
-        email: "santoslegal@gmail.com",
-        facebook: "https://facebook.com",
-        instagram: "",
-        photoUrl: ""
       }
     };
 
@@ -906,15 +882,16 @@ create policy "Public delete" on clients for delete using (true);</pre>
         if (res.ok) {
           const rows = await res.json();
           if (rows && rows.length > 0) {
+            const cloudData = {};
             rows.forEach(r => {
-              clientsData[r.slug] = {
+              cloudData[r.slug] = {
                 slug: r.slug,
                 fullName: r.full_name,
                 initials: r.initials || (r.full_name ? r.full_name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'KS'),
-                title: r.title,
-                bio: r.bio,
-                phone: r.phone,
-                email: r.email,
+                title: r.title || '',
+                bio: r.bio || '',
+                phone: r.phone || '',
+                email: r.email || '',
                 facebook: r.facebook || '',
                 instagram: r.instagram || '',
                 photoUrl: r.photo_url || '',
@@ -925,11 +902,25 @@ create policy "Public delete" on clients for delete using (true);</pre>
                 website: r.website || ''
               };
             });
+            // Supabase is the master source of truth: replace local state so deletions stay permanent
+            clientsData = cloudData;
             saveClientsData();
             renderClientsList();
             updateCodeExport();
             updateMetrics();
             showToast("Clients synced live from Supabase");
+          } else if (rows && rows.length === 0) {
+            // Supabase is empty
+            const hasSynced = localStorage.getItem("tag_has_synced_cloud") === "true";
+            if (!hasSynced && Object.keys(clientsData).length > 0) {
+              await uploadAllLocalClientsToCloud();
+              localStorage.setItem("tag_has_synced_cloud", "true");
+            } else if (hasSynced) {
+              clientsData = {};
+              saveClientsData();
+              renderClientsList();
+              updateMetrics();
+            }
           }
         }
       } catch (err) {
@@ -980,15 +971,17 @@ create policy "Public delete" on clients for delete using (true);</pre>
         try {
           clientsData = JSON.parse(saved);
         } catch (e) {
-          clientsData = { ...SEED_CLIENTS };
+          clientsData = {};
         }
       } else {
-        clientsData = { ...SEED_CLIENTS };
-        saveClientsData();
-      }
-      if (!clientsData || Object.keys(clientsData).length === 0) {
-        clientsData = { ...SEED_CLIENTS };
-        saveClientsData();
+        const isInit = localStorage.getItem("tag_initialized") === "true";
+        if (!isInit) {
+          clientsData = { ...SEED_CLIENTS };
+          saveClientsData();
+          localStorage.setItem("tag_initialized", "true");
+        } else {
+          clientsData = {};
+        }
       }
       updateMetrics();
     }
@@ -1357,17 +1350,23 @@ create policy "Public delete" on clients for delete using (true);</pre>
       switchTab('list');
     }
 
-    function confirmDeleteClient(slug) {
+    async function confirmDeleteClient(slug) {
       const client = clientsData[slug];
       if (!client) return;
 
-      if (confirm(`Are you sure you want to delete the client profile for "${client.fullName}" (/${slug})?`)) {
-        delete clientsData[slug];
-        saveClientsData();
-        deleteClientFromCloud(slug);
-        renderClientsList();
-        showToast(`Client "${client.fullName}" removed`);
+      if (!confirm(`Are you sure you want to delete the client profile for "${client.fullName}" (/${slug})?`)) {
+        return;
       }
+
+      delete clientsData[slug];
+      saveClientsData();
+      renderClientsList();
+
+      await deleteClientFromCloud(slug);
+
+      localStorage.removeItem(`tag_cust_${slug}`);
+      sessionStorage.removeItem(`tag_auth_${slug}`);
+      showToast(`Client "${client.fullName}" permanently deleted`);
     }
 
     function copyNfcUrl(slug) {
