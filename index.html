@@ -808,6 +808,19 @@
         photoUrl: "" // Optional photo URL (leave empty to show monogram)
       },
 
+      "kylesantos": {
+        slug: "kylesantos",
+        fullName: "Kyle Santos",
+        initials: "KS",
+        title: "Business Owner • Executive",
+        bio: "Connect directly with Kyle Santos for appointments, business inquiries, and partnerships.",
+        phone: "+639194850794",
+        email: "kylesantos0411@gmail.com",
+        facebook: "https://www.facebook.com/share/1C7PU3sCpu/?mibextid=wwXIfr",
+        instagram: "https://www.instagram.com/kaiipuccino",
+        photoUrl: ""
+      },
+
       // 2. SAMPLE CLIENT 1: Doctor / Dentist
       "alexander": {
         slug: "alexander",
@@ -934,9 +947,15 @@
       if (!slug) {
         const segments = window.location.pathname.split('/').filter(s => s && s.toLowerCase() !== 'index.html' && s.toLowerCase() !== 'index');
         const lastSegment = segments.length > 0 ? segments[segments.length - 1].toLowerCase() : '';
-        if (lastSegment && !lastSegment.includes(':') && !lastSegment.endsWith('.html')) {
+        if (lastSegment && !lastSegment.includes(':') && !lastSegment.endsWith('.html') && lastSegment !== 'admin') {
           slug = lastSegment;
         }
+      }
+
+      // If at root URL without any client slug or query parameters, redirect to developer portal
+      if (!slug && !params.has('name') && !params.has('email')) {
+        window.location.replace('/admin');
+        return null;
       }
 
       slug = (slug || 'default').toLowerCase();
@@ -978,6 +997,10 @@
 
     // Active client instance
     let activeClient = resolveClient();
+    if (!activeClient) {
+      // Stopped execution because redirecting to /admin
+      throw new Error("Redirecting to Developer Portal");
+    }
 
     // -------------------------------------------------------------------------
     // RENDER CLIENT TO DOM
