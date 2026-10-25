@@ -866,7 +866,11 @@ create policy "Public delete" on clients for delete using (true);</pre>
     });
 
     function getMasterPassword() {
-      return localStorage.getItem("tag_admin_pass") || "tapandgo2026";
+      const stored = localStorage.getItem("tag_admin_pass");
+      if (!stored || stored === "tapandgo2026") {
+        return "Appearo2026$";
+      }
+      return stored;
     }
 
     async function checkAuth() {

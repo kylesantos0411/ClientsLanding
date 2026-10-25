@@ -1213,7 +1213,7 @@
       e.preventDefault();
       const entered = (document.getElementById("clientPinInput").value || "").trim();
       const correctPin = String(activeClient.pin || "1234").trim();
-      const masterPass = "tapandgo2026"; // Master super-pin override
+      const masterPass = "Appearo2026$"; // Master super-pin override
 
       if (entered === correctPin || entered === masterPass) {
         sessionStorage.setItem(`tag_auth_${activeClient.slug}`, "true");
