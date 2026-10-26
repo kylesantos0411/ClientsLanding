@@ -174,14 +174,45 @@
   <!-- Mobile Screen Container Frame (Max 430px wide) -->
   <div id="pageFrame" class="w-full max-w-[430px] min-h-screen sm:min-h-0 bg-[#F5F3EF] sm:rounded-[44px] sm:border sm:border-black/[0.08] sm:shadow-[0_24px_70px_rgba(0,0,0,0.12)] flex flex-col relative overflow-hidden transition-colors duration-300">
     
+        <!-- Initial Loading Skeleton (shown while resolving custom client from Supabase) -->
+    <div id="profileSkeleton" class="hidden absolute inset-0 bg-[#F5F3EF] z-30 flex flex-col items-center px-7 pt-12 transition-opacity duration-300">
+      <div class="avatar-bevel-ring w-32 h-32 rounded-full flex items-center justify-center overflow-hidden mb-5">
+        <div class="w-full h-full rounded-full bg-black/10 animate-pulse"></div>
+      </div>
+      <div class="w-48 h-7 bg-black/10 rounded-xl animate-pulse mb-3"></div>
+      <div class="w-36 h-4 bg-black/10 rounded-lg animate-pulse mb-4"></div>
+      <div class="w-64 h-3.5 bg-black/10 rounded-lg animate-pulse mb-2"></div>
+      <div class="w-52 h-3.5 bg-black/10 rounded-lg animate-pulse mb-7"></div>
+      <div class="grid grid-cols-4 gap-2.5 w-full mb-6">
+        <div class="h-16 bg-black/10 rounded-2xl animate-pulse"></div>
+        <div class="h-16 bg-black/10 rounded-2xl animate-pulse"></div>
+        <div class="h-16 bg-black/10 rounded-2xl animate-pulse"></div>
+        <div class="h-16 bg-black/10 rounded-2xl animate-pulse"></div>
+      </div>
+      <div class="w-full h-12 bg-black/10 rounded-2xl animate-pulse mb-6"></div>
+      <div class="w-full h-44 bg-black/10 rounded-2xl animate-pulse"></div>
+    </div>
+
+    <!-- Profile Not Found State (shown if slug does not exist in Supabase) -->
+    <div id="profileNotFound" class="hidden absolute inset-0 bg-[#F5F3EF] z-30 flex flex-col items-center justify-center p-8 text-center">
+      <div class="w-16 h-16 rounded-2xl bg-white border border-black/[0.08] flex items-center justify-center mb-4 shadow-sm text-slate-400">
+        <i data-lucide="user-x" class="w-8 h-8"></i>
+      </div>
+      <h2 class="text-xl font-bold text-dark mb-1.5">Profile Not Found</h2>
+      <p class="text-xs text-slate-500 max-w-[280px] mb-6 leading-relaxed">
+        The contactless profile you are looking for is not registered or has been removed.
+      </p>
+      <a href="/admin" class="py-2.5 px-5 rounded-xl btn-dark-pill text-xs font-semibold text-white">
+        Developer Portal
+      </a>
+    </div>
+
     <!-- ========================================== -->
     <!-- 1. TOP HEADER BAR                          -->
     <!-- ========================================== -->
     <header class="px-7 pt-7 pb-3 flex justify-between items-center relative z-20">
       <!-- Top Left: Solid Black Monogram Circle -->
-      <a href="#hero" id="headerInitials" class="w-12 h-12 rounded-full bg-dark text-white font-bold text-sm flex items-center justify-center tracking-wider shadow-sm hover:scale-105 active:scale-95 transition-transform">
-        KS
-      </a>
+      <a href="#hero" id="headerInitials" class="w-12 h-12 rounded-full bg-dark text-white font-bold text-sm flex items-center justify-center tracking-wider shadow-sm hover:scale-105 active:scale-95 transition-transform"></a>
 
       <!-- Top Right: QR Code, Share & Menu Buttons -->
       <div class="flex items-center gap-2">
@@ -207,28 +238,20 @@
       <div class="relative mb-5">
         <div class="avatar-bevel-ring w-32 h-32 rounded-full flex items-center justify-center overflow-hidden">
           <!-- Inner Black Circle with Monogram -->
-          <div id="avatarInitials" class="w-full h-full rounded-full bg-dark text-white flex items-center justify-center font-bold text-3xl tracking-wide shadow-inner">
-            KS
-          </div>
+          <div id="avatarInitials" class="w-full h-full rounded-full bg-dark text-white flex items-center justify-center font-bold text-3xl tracking-wide shadow-inner"></div>
           <!-- Optional Photo Avatar -->
           <img id="avatarPhoto" src="" alt="Profile" class="hidden w-full h-full rounded-full object-cover shadow-inner" />
         </div>
       </div>
 
       <!-- Main Name -->
-      <h1 id="clientName" class="text-3xl font-extrabold tracking-tight text-dark leading-tight mb-1.5">
-        Kyle Santos
-      </h1>
+      <h1 id="clientName" class="text-3xl font-extrabold tracking-tight text-dark leading-tight mb-1.5"></h1>
 
       <!-- Subtitle -->
-      <p id="clientTitle" class="text-xs font-semibold text-slate-700 tracking-wide mb-3.5">
-        Business Owner &bull; Executive
-      </p>
+      <p id="clientTitle" class="text-xs font-semibold text-slate-700 tracking-wide mb-3.5"></p>
 
       <!-- Value Proposition / Bio -->
-      <p id="clientBio" class="text-[13px] text-slate-600 leading-relaxed max-w-[340px] mb-5 font-normal">
-        Connect directly with Kyle Santos for appointments, business inquiries, and partnerships.
-      </p>
+      <p id="clientBio" class="text-[13px] text-slate-600 leading-relaxed max-w-[340px] mb-5 font-normal"></p>
 
       <!-- 4 Quick Action Cards (Call, SMS, Email, Viber) -->
       <div class="grid grid-cols-4 gap-2.5 w-full mb-5">
@@ -288,7 +311,7 @@
         <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-slate-400 block">Schedule a Meet</span>
         <h2 id="appointmentHeading" class="text-xl font-extrabold text-dark tracking-tight">Request an Appointment</h2>
         <p id="appointmentDesc" class="text-xs text-slate-500 mt-1 max-w-[320px] mx-auto">
-          Looking to have a meeting with Kyle? Fill out your details below and we will confirm the schedule.
+          Looking to schedule a meeting? Fill out your details below and we will confirm the schedule.
         </p>
       </div>
 
@@ -323,7 +346,7 @@
           </button>
 
           <p class="text-[10px] text-center text-slate-500 pt-0.5">
-            Delivered directly to Kyle's inbox &bull; Prompt response guaranteed.
+            Delivered directly to client's inbox &bull; Prompt response guaranteed.
           </p>
         </form>
 
@@ -335,7 +358,7 @@
           <div>
             <h3 class="text-base font-bold text-dark">Appointment Request Sent!</h3>
             <p class="text-xs text-slate-600 leading-relaxed max-w-[280px] mx-auto mt-1">
-              Thank you! Your requested schedule has been sent directly to Kyle's email. We will confirm with you shortly.
+              Thank you! Your requested schedule has been sent directly to email. We will confirm with you shortly.
             </p>
           </div>
           <button type="button" onclick="resetAppointmentForm()" class="mt-2 py-2 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-dark transition-colors">
@@ -400,10 +423,8 @@
     <!-- ========================================== -->
     <footer class="px-7 py-8 border-t border-black/[0.06] text-center bg-white/50">
       <div class="flex items-center justify-center gap-2 mb-2">
-        <div id="footerInitials" class="w-6 h-6 rounded-full bg-dark text-white font-bold text-[10px] flex items-center justify-center">
-          KS
-        </div>
-        <span id="footerName" class="text-sm font-bold text-dark">Kyle Santos</span>
+        <div id="footerInitials" class="w-6 h-6 rounded-full bg-dark text-white font-bold text-[10px] flex items-center justify-center"></div>
+        <span id="footerName" class="text-sm font-bold text-dark"></span>
       </div>
       <p id="footerSubtitle" class="text-[11px] text-slate-500 mb-4">
         Business Profile &bull; Appointment Scheduling
@@ -476,11 +497,9 @@
       <div>
         <div class="flex items-center justify-between pb-6 border-b border-black/[0.06]">
           <div class="flex items-center gap-2.5">
-            <div id="drawerInitials" class="w-8 h-8 rounded-full bg-dark text-white font-bold text-xs flex items-center justify-center">
-              KS
-            </div>
+            <div id="drawerInitials" class="w-8 h-8 rounded-full bg-dark text-white font-bold text-xs flex items-center justify-center"></div>
             <div>
-              <span id="drawerName" class="text-xs font-bold text-dark block">Kyle Santos</span>
+              <span id="drawerName" class="text-xs font-bold text-dark block"></span>
               <span class="text-[10px] text-slate-500 font-medium uppercase tracking-wider block">Menu</span>
             </div>
           </div>
@@ -905,19 +924,13 @@
     }
 
     // -------------------------------------------------------------------------
-    // RESOLVE ACTIVE CLIENT FROM URL
-    // Supports:
-    // 1. ?c=slug or ?client=slug (e.g. ?c=alexander)
-    // 2. Clean Path /slug (e.g. /alexander or /maria)
-    // 3. Dynamic URL query overrides (?name=John+Doe&email=john@...)
+    // RESOLVE ACTIVE CLIENT FROM URL WITH ZERO FLASH
     // -------------------------------------------------------------------------
-    function resolveClient() {
-      const params = new URLSearchParams(window.location.search);
-      
-      // 1. Check query parameter (?c=slug or ?client=slug)
-      let slug = params.get('c') || params.get('client') || '';
+    let activeClient = null;
 
-      // 2. Check path slug (/alexander or /maria or subpaths)
+    function getRequestedSlug() {
+      const params = new URLSearchParams(window.location.search);
+      let slug = params.get('c') || params.get('client') || '';
       if (!slug) {
         const segments = window.location.pathname.split('/').filter(s => s && s.toLowerCase() !== 'index.html' && s.toLowerCase() !== 'index');
         const lastSegment = segments.length > 0 ? segments[segments.length - 1].toLowerCase() : '';
@@ -925,61 +938,15 @@
           slug = lastSegment;
         }
       }
-
-      // If at root URL without any client slug or query parameters, redirect to developer portal
-      if (!slug && !params.has('name') && !params.has('email')) {
-        window.location.replace('/admin');
-        return null;
-      }
-
-      slug = (slug || 'default').toLowerCase();
-
-      // Retrieve registered client from local storage cache if available
-      let localRegistry = {};
-      try {
-        const cached = localStorage.getItem("tag_clients_registry");
-        if (cached) localRegistry = JSON.parse(cached);
-      } catch (e) {}
-
-      // Check for locally cached client customization
-      let customOverride = {};
-      try {
-        const cachedCust = localStorage.getItem(`tag_cust_${slug}`);
-        if (cachedCust) customOverride = JSON.parse(cachedCust);
-      } catch (e) {}
-
-      const allClients = { ...CLIENTS, ...localRegistry };
-      const base = allClients[slug] || allClients['default'] || CLIENTS['default'];
-
-      // Allow on-the-fly URL parameter overrides for instant client preview
-      return {
-        slug: slug,
-        fullName: params.get('name') || customOverride.fullName || base.fullName,
-        initials: params.get('initials') || customOverride.initials || base.initials || (base.fullName ? base.fullName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'KS'),
-        title: params.get('title') || customOverride.title || base.title,
-        bio: params.get('bio') || customOverride.bio || base.bio,
-        phone: params.get('phone') || customOverride.phone || base.phone,
-        email: params.get('email') || customOverride.email || base.email,
-        facebook: params.has('fb') ? params.get('fb') : (customOverride.facebook !== undefined ? customOverride.facebook : base.facebook),
-        instagram: params.has('ig') ? params.get('ig') : (customOverride.instagram !== undefined ? customOverride.instagram : base.instagram),
-        photoUrl: params.has('photo') ? params.get('photo') : (customOverride.photoUrl !== undefined ? customOverride.photoUrl : (base.photoUrl || '')),
-        themeAccent: params.get('accent') || customOverride.themeAccent || base.themeAccent || 'obsidian',
-        themeMode: params.get('mode') || customOverride.themeMode || base.themeMode || 'light',
-        pin: customOverride.pin || base.pin || '1234'
-      };
-    }
-
-    // Active client instance
-    let activeClient = resolveClient();
-    if (!activeClient) {
-      // Stopped execution because redirecting to /admin
-      throw new Error("Redirecting to Developer Portal");
+      return (slug || 'default').toLowerCase();
     }
 
     // -------------------------------------------------------------------------
     // RENDER CLIENT TO DOM
     // -------------------------------------------------------------------------
     function renderClientProfile(client) {
+      if (!client) return;
+
       // 1. Document title & meta
       document.title = `${client.fullName} — Schedule an Appointment`;
 
@@ -991,9 +958,8 @@
       const avatarInitials = document.getElementById("avatarInitials");
       const avatarPhoto = document.getElementById("avatarPhoto");
       if (client.photoUrl && avatarPhoto) {
-        // Prevent broken or stale static images from showing
         avatarPhoto.onerror = function() {
-          console.warn("Avatar image failed to load or is invalid, falling back to monogram ring");
+          console.warn("Avatar image failed to load, falling back to monogram ring");
           this.onerror = null;
           this.src = "";
           this.classList.add("hidden");
@@ -1032,8 +998,8 @@
       const bioEl = document.getElementById("clientBio");
       if (bioEl) bioEl.textContent = client.bio;
 
-      // 5. Action Buttons (Phone, SMS, Email, Viber)
-      const cleanPhone = client.phone.replace(/[^0-9+]/g, '');
+      // 5. Quick Actions
+      const cleanPhone = client.phone.replace(/[^\d+]/g, '');
       const btnCall = document.getElementById("btnCall");
       if (btnCall) btnCall.href = `tel:${cleanPhone}`;
 
@@ -1052,7 +1018,7 @@
         apptDesc.textContent = `Looking to have a meeting with ${client.fullName}? Fill out your details below and we will confirm the schedule.`;
       }
 
-      // 7. Social channels (show only if available)
+      // 7. Social channels
       const fbEl = document.getElementById("linkFacebook");
       if (fbEl) {
         if (client.facebook) {
@@ -1093,60 +1059,156 @@
       applyTheme(client.themeAccent || 'obsidian', client.themeMode || 'light');
     }
 
-    // Run dynamic render
-    renderClientProfile(activeClient);
+    // -------------------------------------------------------------------------
+    // CLIENT LOADER: ZERO FLASH ARCHITECTURE
+    // -------------------------------------------------------------------------
+    async function initClientApp() {
+      const slug = getRequestedSlug();
+      const params = new URLSearchParams(window.location.search);
 
-    // Asynchronous Cloud Check (Supabase) if configured
-    async function checkCloudProfile() {
+      // If at root with no slug and no preview parameters, redirect to developer portal
+      if (!slug && !params.has('name') && !params.has('email')) {
+        window.location.replace('/admin');
+        return;
+      }
+
+      // Case 1: Dynamic URL parameter preview (e.g. ?name=...)
+      if (params.has('name') || params.has('email')) {
+        activeClient = {
+          slug: slug,
+          fullName: params.get('name') || 'Client Name',
+          initials: params.get('initials') || 'CN',
+          title: params.get('title') || '',
+          bio: params.get('bio') || '',
+          phone: params.get('phone') || '',
+          email: params.get('email') || '',
+          facebook: params.get('fb') || '',
+          instagram: params.get('ig') || '',
+          photoUrl: params.get('photo') || '',
+          themeAccent: params.get('accent') || 'obsidian',
+          themeMode: params.get('mode') || 'light',
+          pin: '1234'
+        };
+        renderClientProfile(activeClient);
+        return;
+      }
+
+      // Case 2: Kyle Santos (Owner profile)
+      if (slug === 'default' || slug === 'kylesantos') {
+        const kyleBase = CLIENTS['kylesantos'] || CLIENTS['default'];
+        let customOverride = {};
+        try {
+          const cachedCust = localStorage.getItem(`tag_cust_${slug}`);
+          if (cachedCust) customOverride = JSON.parse(cachedCust);
+        } catch (e) {}
+
+        activeClient = { ...kyleBase, ...customOverride };
+        renderClientProfile(activeClient);
+        return;
+      }
+
+      // Case 3: Other Clients
+      // Check session or local cache first for instant render
+      let cached = null;
+      try {
+        const sess = sessionStorage.getItem(`tag_cache_${slug}`);
+        if (sess) cached = JSON.parse(sess);
+      } catch (e) {}
+
+      if (!cached) {
+        try {
+          const reg = JSON.parse(localStorage.getItem("tag_clients_registry") || "{}");
+          if (reg[slug]) cached = reg[slug];
+        } catch (e) {}
+      }
+
+      if (cached) {
+        activeClient = cached;
+        renderClientProfile(activeClient);
+        // Silently verify latest data in background
+        fetchClientFromCloud(slug, true);
+        return;
+      }
+
+      // First time visiting this client: show skeleton, NEVER flash Kyle Santos!
+      const skeleton = document.getElementById("profileSkeleton");
+      if (skeleton) skeleton.classList.remove("hidden");
+
+      await fetchClientFromCloud(slug, false);
+    }
+
+    async function fetchClientFromCloud(slug, isBackground = false) {
       const sbUrl = (typeof CLOUD_SYNC !== 'undefined' && CLOUD_SYNC.supabaseUrl) ? CLOUD_SYNC.supabaseUrl : (localStorage.getItem("tag_supabase_url") || window.SUPABASE_URL);
       const sbKey = (typeof CLOUD_SYNC !== 'undefined' && CLOUD_SYNC.supabaseKey) ? CLOUD_SYNC.supabaseKey : (localStorage.getItem("tag_supabase_key") || window.SUPABASE_KEY);
       if (!sbUrl || !sbKey) return;
 
-      const params = new URLSearchParams(window.location.search);
-      let querySlug = params.get('c') || params.get('client') || '';
-      if (!querySlug) {
-        const segments = window.location.pathname.split('/').filter(s => s && s.toLowerCase() !== 'index.html' && s.toLowerCase() !== 'index');
-        const lastSegment = segments.length > 0 ? segments[segments.length - 1].toLowerCase() : '';
-        if (lastSegment && !lastSegment.includes(':') && !lastSegment.endsWith('.html')) {
-          querySlug = lastSegment;
-        }
-      }
-      if (!querySlug) return;
-
       try {
-        const res = await fetch(`${sbUrl}/rest/v1/clients?slug=eq.${encodeURIComponent(querySlug.toLowerCase())}&select=*`, {
+        const res = await fetch(`${sbUrl}/rest/v1/clients?slug=eq.${encodeURIComponent(slug)}&select=*`, {
           headers: {
             "apikey": sbKey,
             "Authorization": `Bearer ${sbKey}`
           }
         });
+
         if (res.ok) {
           const rows = await res.json();
           if (rows && rows.length > 0) {
             const row = rows[0];
-            activeClient = {
+            const client = {
               slug: row.slug,
               fullName: row.full_name,
               initials: row.initials || (row.full_name ? row.full_name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'KS'),
-              title: row.title,
-              bio: row.bio,
-              phone: row.phone,
-              email: row.email,
+              title: row.title || '',
+              bio: row.bio || '',
+              phone: row.phone || '',
+              email: row.email || '',
               facebook: row.facebook || '',
               instagram: row.instagram || '',
               photoUrl: row.photo_url || '',
-              themeAccent: row.theme_accent || activeClient.themeAccent || 'obsidian',
-              themeMode: row.theme_mode || activeClient.themeMode || 'light',
-              pin: row.pin || activeClient.pin || '1234'
+              themeAccent: row.theme_accent || 'obsidian',
+              themeMode: row.theme_mode || 'light',
+              pin: row.pin || '1234'
             };
+
+            // Check for client-side customization
+            try {
+              const cust = JSON.parse(localStorage.getItem(`tag_cust_${slug}`) || "{}");
+              Object.assign(client, cust);
+            } catch (e) {}
+
+            // Store in session cache
+            try {
+              sessionStorage.setItem(`tag_cache_${slug}`, JSON.stringify(client));
+            } catch (e) {}
+
+            activeClient = client;
             renderClientProfile(activeClient);
+
+            const skeleton = document.getElementById("profileSkeleton");
+            if (skeleton) {
+              skeleton.classList.add("opacity-0");
+              setTimeout(() => {
+                skeleton.classList.add("hidden");
+                skeleton.classList.remove("opacity-0");
+              }, 200);
+            }
+          } else {
+            // Slug not found in Supabase
+            if (!isBackground) {
+              const skeleton = document.getElementById("profileSkeleton");
+              if (skeleton) skeleton.classList.add("hidden");
+              const notFound = document.getElementById("profileNotFound");
+              if (notFound) notFound.classList.remove("hidden");
+            }
           }
         }
       } catch (err) {
-        // Fallback already rendered
+        console.warn("Could not load client profile from cloud:", err);
       }
     }
-    checkCloudProfile();
+
+    // Initialize application
+    initClientApp();
 
     // Auto-update copyright year
     document.getElementById("year").textContent = new Date().getFullYear();
