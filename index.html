@@ -957,14 +957,16 @@
       // 3. Avatar (Photo or Monogram)
       const avatarInitials = document.getElementById("avatarInitials");
       const avatarPhoto = document.getElementById("avatarPhoto");
-      if (client.photoUrl && avatarPhoto) {
+      const photoSrc = client.photoUrl || client.photo_url || "";
+      if (photoSrc && avatarPhoto) {
         avatarPhoto.onerror = function() {
           console.warn("Avatar image failed to load, falling back to monogram ring");
           this.onerror = null;
+          this.onload = null;
           this.src = "";
           this.classList.add("hidden");
           if (avatarInitials) {
-            avatarInitials.textContent = client.initials;
+            avatarInitials.textContent = client.initials || "KS";
             avatarInitials.classList.remove("hidden");
           }
         };
@@ -974,7 +976,16 @@
             if (avatarInitials) avatarInitials.classList.add("hidden");
           }
         };
-        avatarPhoto.src = client.photoUrl;
+        // Unhide photo immediately and hide monogram initials
+        avatarPhoto.classList.remove("hidden");
+        if (avatarInitials) avatarInitials.classList.add("hidden");
+        avatarPhoto.src = photoSrc;
+
+        // Double check if already complete in memory (data URI or cached)
+        if (avatarPhoto.complete && avatarPhoto.naturalWidth > 0) {
+          avatarPhoto.classList.remove("hidden");
+          if (avatarInitials) avatarInitials.classList.add("hidden");
+        }
       } else {
         if (avatarPhoto) {
           avatarPhoto.onerror = null;
@@ -983,7 +994,7 @@
           avatarPhoto.classList.add("hidden");
         }
         if (avatarInitials) {
-          avatarInitials.textContent = client.initials;
+          avatarInitials.textContent = client.initials || "KS";
           avatarInitials.classList.remove("hidden");
         }
       }
@@ -1170,15 +1181,13 @@
               pin: row.pin || '1234'
             };
 
-            // Check for client-side customization
-            try {
-              const cust = JSON.parse(localStorage.getItem(`tag_cust_${slug}`) || "{}");
-              Object.assign(client, cust);
-            } catch (e) {}
-
-            // Store in session cache
+            // Supabase cloud data is authoritative: update cache and eliminate stale drafts
             try {
               sessionStorage.setItem(`tag_cache_${slug}`, JSON.stringify(client));
+              const reg = JSON.parse(localStorage.getItem("tag_clients_registry") || "{}");
+              reg[slug] = client;
+              localStorage.setItem("tag_clients_registry", JSON.stringify(reg));
+              localStorage.removeItem(`tag_cust_${slug}`);
             } catch (e) {}
 
             activeClient = client;
@@ -1505,6 +1514,12 @@
 
       // 1. Save locally for instant persistence
       localStorage.setItem(`tag_cust_${activeClient.slug}`, JSON.stringify(activeClient));
+      try {
+        sessionStorage.setItem(`tag_cache_${activeClient.slug}`, JSON.stringify(activeClient));
+        const reg = JSON.parse(localStorage.getItem("tag_clients_registry") || "{}");
+        reg[activeClient.slug] = activeClient;
+        localStorage.setItem("tag_clients_registry", JSON.stringify(reg));
+      } catch (e) {}
 
       // 2. Sync to Supabase
       const sbUrl = (typeof CLOUD_SYNC !== 'undefined' && CLOUD_SYNC.supabaseUrl) ? CLOUD_SYNC.supabaseUrl : localStorage.getItem("tag_supabase_url");
