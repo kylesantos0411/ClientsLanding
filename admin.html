@@ -18,19 +18,10 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    :root {
-      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-      --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-    }
-    * {
-      -webkit-tap-highlight-color: transparent;
-    }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: #F5F3EF;
       color: #1C1E21;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
@@ -45,47 +36,6 @@
     }
     .bevel-ring {
       box-shadow: 0 4px 20px rgba(0,0,0,0.06), inset 0 0 0 1px rgba(255,255,255,0.8), inset 0 2px 4px rgba(0,0,0,0.04);
-    }
-    /* Emil Kowalski & Apple Design Tactile Interactions */
-    button, a {
-      transition: transform 140ms var(--ease-out), box-shadow 160ms var(--ease-out), filter 140ms var(--ease-out);
-    }
-    button:active, a:active {
-      transform: scale(0.97);
-    }
-    input:focus, textarea:focus, select:focus {
-      outline: none !important;
-      border-color: #1C1E21 !important;
-      box-shadow: 0 0 0 3px rgba(28, 30, 33, 0.08) !important;
-      transition: border-color 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
-    }
-    /* Fluid Modal */
-    .modal-overlay {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 220ms var(--ease-out);
-      will-change: opacity;
-    }
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .modal-card {
-      transform: scale(0.95);
-      opacity: 0;
-      transition: transform 220ms var(--ease-out), opacity 200ms var(--ease-out);
-      will-change: transform, opacity;
-    }
-    .modal-overlay.active .modal-card {
-      transform: scale(1);
-      opacity: 1;
-    }
-    /* Reduced Motion */
-    @media (prefers-reduced-motion: reduce) {
-      *, ::before, ::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
     }
   </style>
 </head>
@@ -806,8 +756,8 @@ create policy "Public delete" on clients for delete using (true);</pre>
   <!-- ========================================================================= -->
   <!-- MODAL: CHANGE ADMIN PASSWORD                                              -->
   <!-- ========================================================================= -->
-  <div id="passwordModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 modal-overlay" onclick="closePasswordModal(event)">
-    <div class="w-full max-w-sm bg-white rounded-3xl p-6 border border-[#E5E2DC] shadow-2xl modal-card" onclick="event.stopPropagation()">
+  <div id="passwordModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-white rounded-3xl p-6 border border-[#E5E2DC] shadow-2xl">
       <div class="flex items-center justify-between pb-3 mb-4 border-b border-[#E5E2DC]">
         <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
           <i data-lucide="key" class="w-4 h-4 text-slate-700"></i>
@@ -1644,33 +1594,14 @@ create policy "Public delete" on clients for delete using (true);`;
     // PASSWORD MANAGEMENT
     // -------------------------------------------------------------------------
     function openPasswordModal() {
-      const modal = document.getElementById("passwordModal");
-      modal.classList.remove("hidden");
-      requestAnimationFrame(() => modal.classList.add("active"));
+      document.getElementById("passwordModal").classList.remove("hidden");
     }
 
-    function closePasswordModal(event) {
-      const modal = document.getElementById("passwordModal");
-      if (modal) {
-        modal.classList.remove("active");
-        setTimeout(() => {
-          if (!modal.classList.contains("active")) {
-            modal.classList.add("hidden");
-          }
-        }, 220);
-      }
-      const p1 = document.getElementById("newPassInput");
-      const p2 = document.getElementById("confirmPassInput");
-      if (p1) p1.value = "";
-      if (p2) p2.value = "";
+    function closePasswordModal() {
+      document.getElementById("passwordModal").classList.add("hidden");
+      document.getElementById("newPassInput").value = "";
+      document.getElementById("confirmPassInput").value = "";
     }
-
-    // Global Keyboard Navigation (Apple HIG)
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        closePasswordModal();
-      }
-    });
 
     function handleSavePassword(e) {
       e.preventDefault();

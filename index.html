@@ -49,27 +49,16 @@
       --accent-hover: #000000;
       --accent-ring: linear-gradient(135deg, #E6E1D8 0%, #CAC3B6 100%);
       --accent-text: #FFFFFF;
-
-      /* Emil Kowalski & Apple Design Custom Easing Curves */
-      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-      --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-      --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-      --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
-    }
-
-    /* Hardware accelerated smooth rendering */
-    * {
-      -webkit-tap-highlight-color: transparent;
     }
 
     body {
       background-color: #F5F3EF;
       color: #14161B;
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      -webkit-tap-highlight-color: transparent;
       overflow-x: hidden;
-      transition: background-color 240ms var(--ease-out), color 240ms var(--ease-out);
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     /* Executive Dark Mode */
@@ -80,12 +69,15 @@
     body.theme-dark #pageFrame {
       background-color: #0E1014 !important;
       border-color: rgba(255, 255, 255, 0.08) !important;
-      box-shadow: 0 24px 70px rgba(0,0,0,0.6) !important;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.5) !important;
     }
     body.theme-dark .clean-card {
       background: #171A21 !important;
       border-color: rgba(255, 255, 255, 0.08) !important;
       color: #F3F4F6 !important;
+    }
+    body.theme-dark .clean-card:hover {
+      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5) !important;
     }
     body.theme-dark .clean-card * {
       color: #F3F4F6;
@@ -102,7 +94,7 @@
       color: #9CA3AF !important;
     }
     body.theme-dark footer {
-      background-color: rgba(23, 26, 33, 0.7) !important;
+      background-color: rgba(23, 26, 33, 0.6) !important;
       border-color: rgba(255, 255, 255, 0.08) !important;
     }
     body.theme-dark input,
@@ -118,151 +110,53 @@
     body.theme-dark .bg-\[\#F5F3EF\] {
       background-color: #0E1014 !important;
     }
-    body.theme-dark .nav-drawer-content,
-    body.theme-dark .customizer-drawer-content,
-    body.theme-dark .modal-card {
-      background-color: #12141A !important;
-      border-color: rgba(255, 255, 255, 0.1) !important;
-      color: #F3F4F6 !important;
-    }
-    body.theme-dark .modal-card * {
-      color: #F3F4F6;
-    }
-    body.theme-dark .modal-card .text-slate-500,
-    body.theme-dark .modal-card .text-slate-400 {
-      color: #9CA3AF !important;
-    }
 
-    /* Studio Card System (Seenry & Emil Kowalski) */
     .clean-card {
       background: #FFFFFF;
-      border: 1px solid rgba(0, 0, 0, 0.06);
-      box-shadow: 0 1px 3px rgba(20, 22, 27, 0.02), 0 6px 18px -4px rgba(20, 22, 27, 0.04);
-      transition: transform 160ms var(--ease-out), box-shadow 180ms var(--ease-out), border-color 160ms var(--ease-out);
-      will-change: transform;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 18px -2px rgba(20, 22, 27, 0.04), 0 2px 6px -1px rgba(20, 22, 27, 0.02);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .clean-card:hover {
+      box-shadow: 0 8px 24px -4px rgba(20, 22, 27, 0.08);
+      transform: translateY(-1.5px);
     }
     .clean-card:active {
-      transform: scale(0.97) !important;
+      transform: scale(0.98);
     }
 
-    @media (hover: hover) and (pointer: fine) {
-      .clean-card:hover {
-        box-shadow: 0 8px 24px -4px rgba(20, 22, 27, 0.08);
-        border-color: rgba(0, 0, 0, 0.12);
-        transform: translateY(-1.5px);
-      }
-      body.theme-dark .clean-card:hover {
-        box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.5) !important;
-        border-color: rgba(255, 255, 255, 0.16) !important;
-      }
-    }
-
-    /* Tactile Luxury Buttons */
     .btn-dark-pill {
       background: var(--accent-color, #14161B) !important;
       color: var(--accent-text, #FFFFFF) !important;
-      box-shadow: 0 4px 16px rgba(20, 22, 27, 0.14);
-      transition: transform 140ms var(--ease-out), box-shadow 180ms var(--ease-out), filter 140ms var(--ease-out);
-      will-change: transform;
+      box-shadow: 0 4px 16px rgba(20, 22, 27, 0.15);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-dark-pill:hover {
+      filter: brightness(0.9);
+      box-shadow: 0 6px 20px rgba(20, 22, 27, 0.22);
+      transform: translateY(-1px);
     }
     .btn-dark-pill:active {
-      transform: scale(0.96) !important;
+      transform: scale(0.98);
     }
 
-    @media (hover: hover) and (pointer: fine) {
-      .btn-dark-pill:hover {
-        filter: brightness(0.92);
-        box-shadow: 0 8px 24px rgba(20, 22, 27, 0.22);
-        transform: translateY(-1px);
-      }
-    }
-
-    /* Metallic Signature Avatar Bevel Ring */
     .avatar-bevel-ring {
       background: var(--accent-ring, linear-gradient(135deg, #E6E1D8 0%, #CAC3B6 100%)) !important;
       padding: 5px;
-      box-shadow: 0 12px 30px -6px rgba(20, 22, 27, 0.14), inset 0 2px 4px rgba(255, 255, 255, 0.85);
-      transition: background 300ms var(--ease-out), box-shadow 300ms var(--ease-out);
-    }
-
-    /* Smooth Input Focus Rings */
-    input:focus, textarea:focus {
-      outline: none !important;
-      border-color: var(--accent-color, #14161B) !important;
-      box-shadow: 0 0 0 3px rgba(20, 22, 27, 0.08) !important;
-      transition: border-color 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
-    }
-    body.theme-dark input:focus,
-    body.theme-dark textarea:focus {
-      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1) !important;
-    }
-
-    /* Modal Transitions (Emil Kowalski: Never scale(0), start scale(0.96)) */
-    .modal-overlay {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 220ms var(--ease-out);
-      will-change: opacity;
-    }
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .modal-card {
-      transform: scale(0.95);
-      opacity: 0;
-      transition: transform 220ms var(--ease-out), opacity 200ms var(--ease-out);
-      will-change: transform, opacity;
-    }
-    .modal-overlay.active .modal-card {
-      transform: scale(1);
-      opacity: 1;
-    }
-
-    /* Slide-In Drawers (Apple Fluid Sheet curve: cubic-bezier(0.32, 0.72, 0, 1)) */
-    .drawer-overlay {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 260ms var(--ease-out);
-      will-change: opacity;
-    }
-    .drawer-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .drawer-panel {
-      transform: translateX(100%);
-      transition: transform 300ms var(--ease-drawer);
-      will-change: transform;
-    }
-    .drawer-overlay.active .drawer-panel {
-      transform: translateX(0);
-    }
-
-    /* Toast Notification (Sonner Spring-Inspired Motion) */
-    #toast {
-      transform: translate(-50%, 16px) scale(0.96);
-      opacity: 0;
-      pointer-events: none;
-      transition: transform 240ms var(--ease-out), opacity 200ms var(--ease-out);
-      will-change: transform, opacity;
-    }
-    #toast.toast-visible {
-      transform: translate(-50%, 0) scale(1);
-      opacity: 1;
-      pointer-events: auto;
+      box-shadow: 0 10px 25px -5px rgba(20, 22, 27, 0.12), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+      transition: background 0.3s ease;
     }
 
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-5px); }
-      40%, 80% { transform: translateX(5px); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
     }
     .shake-anim {
-      animation: shake 0.36s var(--ease-out);
+      animation: shake 0.4s ease-in-out;
     }
 
-    /* Custom Luxury Scrollbar */
+    /* Scrollbar */
     ::-webkit-scrollbar {
       width: 5px;
     }
@@ -272,19 +166,6 @@
     ::-webkit-scrollbar-thumb {
       background: #D5CEBF;
       border-radius: 9999px;
-    }
-    body.theme-dark ::-webkit-scrollbar-thumb {
-      background: #2D313A;
-    }
-
-    /* Accessibility: Reduced Motion */
-    @media (prefers-reduced-motion: reduce) {
-      *, ::before, ::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
     }
   </style>
 </head>
@@ -573,8 +454,8 @@
   <!-- ========================================== -->
   <!-- MODAL: QR CODE FOR INSTANT SCAN            -->
   <!-- ========================================== -->
-  <div id="qrModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4 modal-overlay" onclick="closeQrModal(event)">
-    <div class="bg-white rounded-3xl p-6 max-w-xs w-full text-center space-y-4 shadow-2xl border border-black/5 modal-card" onclick="event.stopPropagation()">
+  <div id="qrModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4" onclick="closeQrModal(event)">
+    <div class="bg-white rounded-3xl p-6 max-w-xs w-full text-center space-y-4 shadow-2xl border border-black/5" onclick="event.stopPropagation()">
       <div class="flex justify-between items-center">
         <div class="text-left">
           <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">In-Person Scan</span>
@@ -610,8 +491,8 @@
   <!-- ========================================== -->
   <!-- SLIDE-IN NAVIGATION DRAWER                 -->
   <!-- ========================================== -->
-  <div id="navDrawer" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden drawer-overlay" onclick="toggleNavDrawer()">
-    <div class="fixed top-0 right-0 bottom-0 w-72 bg-[#F5F3EF] border-l border-black/[0.08] p-6 flex flex-col justify-between shadow-2xl drawer-panel nav-drawer-content" onclick="event.stopPropagation()">
+  <div id="navDrawer" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden transition-opacity" onclick="toggleNavDrawer()">
+    <div class="fixed top-0 right-0 bottom-0 w-72 bg-[#F5F3EF] border-l border-black/[0.08] p-6 flex flex-col justify-between shadow-2xl" onclick="event.stopPropagation()">
       
       <div>
         <div class="flex items-center justify-between pb-6 border-b border-black/[0.06]">
@@ -664,8 +545,8 @@
   <!-- ========================================== -->
   <!-- MODAL: CLIENT PIN VERIFICATION             -->
   <!-- ========================================== -->
-  <div id="pinModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4 modal-overlay" onclick="closePinModal(event)">
-    <div id="pinModalCard" class="bg-white rounded-3xl p-6 max-w-xs w-full text-center space-y-4 shadow-2xl border border-black/5 modal-card" onclick="event.stopPropagation()">
+  <div id="pinModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4" onclick="closePinModal(event)">
+    <div id="pinModalCard" class="bg-white rounded-3xl p-6 max-w-xs w-full text-center space-y-4 shadow-2xl border border-black/5" onclick="event.stopPropagation()">
       <div class="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto text-dark shadow-inner">
         <i data-lucide="lock" class="w-6 h-6 stroke-[1.8]"></i>
       </div>
@@ -706,8 +587,8 @@
   <!-- ========================================== -->
   <!-- SLIDE-IN CLIENT CUSTOMIZER DRAWER          -->
   <!-- ========================================== -->
-  <div id="customizerDrawer" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden drawer-overlay" onclick="closeCustomizerDrawer()">
-    <div class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-[#F5F3EF] border-l border-black/[0.08] p-5 sm:p-6 flex flex-col justify-between shadow-2xl overflow-y-auto drawer-panel customizer-drawer-content" onclick="event.stopPropagation()">
+  <div id="customizerDrawer" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden" onclick="closeCustomizerDrawer()">
+    <div class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-[#F5F3EF] border-l border-black/[0.08] p-5 sm:p-6 flex flex-col justify-between shadow-2xl overflow-y-auto" onclick="event.stopPropagation()">
       
       <!-- Top Bar: Title & Close -->
       <div>
@@ -908,7 +789,7 @@
 
 
   <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="fixed bottom-6 left-1/2 px-4 py-2.5 rounded-full bg-dark text-white text-xs font-semibold shadow-2xl z-50 flex items-center gap-2">
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2.5 rounded-full bg-dark text-white text-xs font-medium shadow-2xl z-50 hidden items-center gap-2 transition-all">
     <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
     <span id="toastMsg">Action completed</span>
   </div>
