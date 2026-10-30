@@ -11,6 +11,9 @@
   <meta property="og:description" content="Official client profile and appointment scheduling portal." />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#F5F3EF" />
+  <!-- Favicon & Icons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="alternate icon" href="/favicon.ico" />
 
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -383,6 +386,40 @@
       </div>
 
       <div class="space-y-2.5">
+        <!-- Appearo Business Platform Link -->
+        <a id="linkAppearoPlatform" href="https://www.appearoph.online/" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-3.5 rounded-2xl clean-card text-xs text-dark group border border-amber-500/25 bg-gradient-to-r from-amber-500/[0.06] via-transparent to-transparent hover:border-amber-500/50 hover:shadow-xs transition-all">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-[#14161B] text-[#D4AF37] border border-[#D4AF37]/40 flex items-center justify-center shrink-0 shadow-xs font-serif font-black text-sm">
+              A
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-dark group-hover:underline">Appearo Business Platform</span>
+                <span class="text-[9px] font-extrabold uppercase tracking-wider bg-[#14161B] text-[#D4AF37] px-2 py-0.5 rounded-full border border-[#D4AF37]/30">Our Platform</span>
+              </div>
+              <span class="text-[11px] text-slate-500">Visit appearoph.online &bull; Official Platform of Appearo</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 text-[#D4AF37] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+            <span class="text-[11px] font-bold text-slate-600 group-hover:text-dark hidden sm:inline">Visit</span>
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-500 group-hover:text-dark"></i>
+          </div>
+        </a>
+
+        <!-- Client Website (Optional) -->
+        <a id="linkWebsite" href="#" target="_blank" rel="noopener noreferrer" class="hidden flex items-center justify-between p-3.5 rounded-2xl clean-card text-xs text-dark group">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <i data-lucide="globe" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <span id="linkWebsiteLabel" class="font-bold block text-dark group-hover:underline">Official Website</span>
+              <span id="linkWebsiteSub" class="text-[11px] text-slate-500">Visit client website</span>
+            </div>
+          </div>
+          <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-dark transition-colors"></i>
+        </a>
+
         <!-- Facebook -->
         <a id="linkFacebook" href="https://www.facebook.com/share/1C7PU3sCpu/?mibextid=wwXIfr" target="_blank" class="flex items-center justify-between p-3.5 rounded-2xl clean-card text-xs text-dark group">
           <div class="flex items-center gap-3">
@@ -441,6 +478,14 @@
         </button>
         <span>&bull;</span>
         <a href="#hero" class="hover:text-dark transition-colors">Top</a>
+      </div>
+
+      <div class="mb-3.5">
+        <a href="https://www.appearoph.online/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 hover:text-dark transition group">
+          <span class="w-4 h-4 rounded-full bg-dark text-[#D4AF37] text-[9px] font-black inline-flex items-center justify-center shadow-2xs">A</span>
+          <span>Platform of Appearo &bull; <span class="underline group-hover:text-[#D4AF37]">appearoph.online</span></span>
+          <i data-lucide="arrow-up-right" class="w-3 h-3 text-slate-400 group-hover:text-dark"></i>
+        </a>
       </div>
 
       <p class="text-[10px] text-slate-400">
@@ -516,6 +561,13 @@
           <a href="#appointment" onclick="toggleNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white text-dark text-xs font-semibold transition-colors">
             <i data-lucide="calendar" class="w-4 h-4 text-slate-600"></i>
             <span>Request Appointment</span>
+          </a>
+          <a href="https://www.appearoph.online/" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-white text-dark text-xs font-semibold transition-colors group">
+            <div class="flex items-center gap-3">
+              <i data-lucide="globe" class="w-4 h-4 text-amber-600"></i>
+              <span>Appearo Platform</span>
+            </div>
+            <span class="text-[9px] font-extrabold uppercase tracking-wider bg-[#14161B] text-[#D4AF37] px-1.5 py-0.5 rounded-full border border-[#D4AF37]/30">Our Platform</span>
           </a>
           <button onclick="toggleNavDrawer(); openPinModal();" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-white text-dark text-xs font-semibold transition-colors text-left">
             <div class="flex items-center gap-3">
@@ -1050,6 +1102,18 @@
         }
       }
 
+      const webEl = document.getElementById("linkWebsite");
+      if (webEl) {
+        if (client.website) {
+          webEl.href = client.website.startsWith("http") ? client.website : "https://" + client.website;
+          webEl.classList.remove("hidden");
+          const webSub = document.getElementById("linkWebsiteSub");
+          if (webSub) webSub.textContent = client.website.replace(/^https?:\/\//i, "").replace(/\/$/, "");
+        } else {
+          webEl.classList.add("hidden");
+        }
+      }
+
       // 8. Drawer & Footer
       const drawerInitials = document.getElementById("drawerInitials");
       if (drawerInitials) drawerInitials.textContent = client.initials;
@@ -1136,8 +1200,11 @@
       if (cached) {
         activeClient = cached;
         renderClientProfile(activeClient);
-        // Silently verify latest data in background
-        fetchClientFromCloud(slug, true);
+        // Deduplicate intra-session background requests: only verify if cache is older than 2 minutes
+        const isFresh = cached._ts && (Date.now() - cached._ts < 120000);
+        if (!isFresh) {
+          fetchClientFromCloud(slug, true);
+        }
         return;
       }
 
@@ -1183,6 +1250,7 @@
 
             // Supabase cloud data is authoritative: update cache and eliminate stale drafts
             try {
+              client._ts = Date.now();
               sessionStorage.setItem(`tag_cache_${slug}`, JSON.stringify(client));
               const reg = JSON.parse(localStorage.getItem("tag_clients_registry") || "{}");
               reg[slug] = client;

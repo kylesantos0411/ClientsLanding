@@ -1,8 +1,22 @@
 {
   "routes": [
+    {
+      "src": "^/(.*\\.(?:ico|svg|png|jpg|jpeg|webp|txt|xml))$",
+      "headers": {
+        "cache-control": "public, max-age=86400, stale-while-revalidate=604800"
+      },
+      "continue": true
+    },
+    {
+      "src": "^/(index\\.html|admin\\.html)$",
+      "headers": {
+        "cache-control": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+      },
+      "continue": true
+    },
     { "src": "^/?$", "dest": "/admin.html" },
     { "src": "^/admin/?$", "dest": "/admin.html" },
     { "handle": "filesystem" },
-    { "src": "^/(.*)$", "dest": "/index.html" }
+    { "src": "^/[^.]*$", "dest": "/index.html" }
   ]
 }
