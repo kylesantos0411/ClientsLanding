@@ -49,16 +49,25 @@
       --accent-hover: #000000;
       --accent-ring: linear-gradient(135deg, #E6E1D8 0%, #CAC3B6 100%);
       --accent-text: #FFFFFF;
+
+      /* Emil Kowalski & Apple Design Easing Curves */
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+      --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+      --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
       background-color: #F5F3EF;
       color: #14161B;
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
-      -webkit-tap-highlight-color: transparent;
+      -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      transition: background-color 240ms var(--ease-out), color 240ms var(--ease-out);
     }
 
     /* Executive Dark Mode */
@@ -69,15 +78,12 @@
     body.theme-dark #pageFrame {
       background-color: #0E1014 !important;
       border-color: rgba(255, 255, 255, 0.08) !important;
-      box-shadow: 0 24px 70px rgba(0,0,0,0.5) !important;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.6) !important;
     }
     body.theme-dark .clean-card {
       background: #171A21 !important;
       border-color: rgba(255, 255, 255, 0.08) !important;
       color: #F3F4F6 !important;
-    }
-    body.theme-dark .clean-card:hover {
-      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5) !important;
     }
     body.theme-dark .clean-card * {
       color: #F3F4F6;
@@ -94,7 +100,7 @@
       color: #9CA3AF !important;
     }
     body.theme-dark footer {
-      background-color: rgba(23, 26, 33, 0.6) !important;
+      background-color: rgba(23, 26, 33, 0.7) !important;
       border-color: rgba(255, 255, 255, 0.08) !important;
     }
     body.theme-dark input,
@@ -103,6 +109,12 @@
       color: #F3F4F6 !important;
       border-color: rgba(255, 255, 255, 0.12) !important;
     }
+    body.theme-dark input:focus,
+    body.theme-dark textarea:focus {
+      background-color: #171A21 !important;
+      border-color: rgba(255, 255, 255, 0.3) !important;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08) !important;
+    }
     body.theme-dark .border-black\/\[0\.06\],
     body.theme-dark .border-black\/\[0\.08\] {
       border-color: rgba(255, 255, 255, 0.08) !important;
@@ -110,53 +122,129 @@
     body.theme-dark .bg-\[\#F5F3EF\] {
       background-color: #0E1014 !important;
     }
+    body.theme-dark .pill-badge {
+      background-color: rgba(255, 255, 255, 0.08) !important;
+      border-color: rgba(255, 255, 255, 0.12) !important;
+      color: #E5E7EB !important;
+    }
+    body.theme-dark .action-icon-well {
+      background-color: rgba(255, 255, 255, 0.06) !important;
+      color: #F3F4F6 !important;
+    }
+    body.theme-dark .header-action-btn {
+      background-color: rgba(255, 255, 255, 0.06) !important;
+      color: #F3F4F6 !important;
+    }
+    body.theme-dark .header-action-btn:hover {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+    }
+    body.theme-dark .nfc-active-dot {
+      ring-color: #0E1014 !important;
+    }
 
+    /* Studio Card System */
     .clean-card {
       background: #FFFFFF;
-      border: 1px solid rgba(0, 0, 0, 0.05);
-      box-shadow: 0 4px 18px -2px rgba(20, 22, 27, 0.04), 0 2px 6px -1px rgba(20, 22, 27, 0.02);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .clean-card:hover {
-      box-shadow: 0 8px 24px -4px rgba(20, 22, 27, 0.08);
-      transform: translateY(-1.5px);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 1px 3px rgba(20, 22, 27, 0.02), 0 6px 18px -4px rgba(20, 22, 27, 0.04);
+      transition: transform 160ms var(--ease-out), box-shadow 180ms var(--ease-out), border-color 160ms var(--ease-out);
+      will-change: transform;
     }
     .clean-card:active {
-      transform: scale(0.98);
+      transform: scale(0.97) !important;
     }
 
+    @media (hover: hover) and (pointer: fine) {
+      .clean-card:hover {
+        box-shadow: 0 10px 26px -4px rgba(20, 22, 27, 0.08);
+        border-color: rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+      }
+      body.theme-dark .clean-card:hover {
+        box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.5) !important;
+        border-color: rgba(255, 255, 255, 0.16) !important;
+      }
+    }
+
+    /* Tactile Luxury Buttons */
     .btn-dark-pill {
       background: var(--accent-color, #14161B) !important;
       color: var(--accent-text, #FFFFFF) !important;
-      box-shadow: 0 4px 16px rgba(20, 22, 27, 0.15);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .btn-dark-pill:hover {
-      filter: brightness(0.9);
-      box-shadow: 0 6px 20px rgba(20, 22, 27, 0.22);
-      transform: translateY(-1px);
+      box-shadow: 0 4px 18px rgba(20, 22, 27, 0.16);
+      transition: transform 140ms var(--ease-out), box-shadow 180ms var(--ease-out), filter 140ms var(--ease-out);
+      will-change: transform;
     }
     .btn-dark-pill:active {
-      transform: scale(0.98);
+      transform: scale(0.96) !important;
     }
 
+    @media (hover: hover) and (pointer: fine) {
+      .btn-dark-pill:hover {
+        filter: brightness(0.92);
+        box-shadow: 0 8px 26px rgba(20, 22, 27, 0.24);
+        transform: translateY(-1.5px);
+      }
+    }
+
+    /* Metallic Luxury Avatar Bevel Ring */
     .avatar-bevel-ring {
       background: var(--accent-ring, linear-gradient(135deg, #E6E1D8 0%, #CAC3B6 100%)) !important;
       padding: 5px;
-      box-shadow: 0 10px 25px -5px rgba(20, 22, 27, 0.12), inset 0 2px 4px rgba(255, 255, 255, 0.8);
-      transition: background 0.3s ease;
+      box-shadow: 0 12px 32px -6px rgba(20, 22, 27, 0.16), inset 0 2px 4px rgba(255, 255, 255, 0.85);
+      transition: background 300ms var(--ease-out), box-shadow 300ms var(--ease-out);
+    }
+
+    /* Elevated Form Controls */
+    input:focus, textarea:focus {
+      outline: none !important;
+      background-color: #FFFFFF !important;
+      border-color: var(--accent-color, #14161B) !important;
+      box-shadow: 0 0 0 3px rgba(20, 22, 27, 0.08) !important;
+      transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+    }
+
+    /* Pure CSS Modal Pop-In (Safe with existing JS .hidden toggles) */
+    #qrModal:not(.hidden) > div,
+    #pinModal:not(.hidden) > div {
+      animation: modalPopIn 220ms var(--ease-out) forwards;
+      will-change: transform, opacity;
+    }
+    @keyframes modalPopIn {
+      0% { transform: scale(0.95); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Pure CSS Drawer Slide-In (Safe with existing JS .hidden toggles) */
+    #navDrawer:not(.hidden) > div,
+    #customizerDrawer:not(.hidden) > div {
+      animation: drawerSlideIn 280ms var(--ease-drawer) forwards;
+      will-change: transform;
+    }
+    @keyframes drawerSlideIn {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(0); }
+    }
+
+    /* Pure CSS Toast Pop-In */
+    #toast:not(.hidden) {
+      animation: toastIn 240ms var(--ease-out) forwards;
+      will-change: transform, opacity;
+    }
+    @keyframes toastIn {
+      0% { transform: translate(-50%, 16px) scale(0.95); opacity: 0; }
+      100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
     }
 
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-6px); }
-      40%, 80% { transform: translateX(6px); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
     }
     .shake-anim {
-      animation: shake 0.4s ease-in-out;
+      animation: shake 0.36s var(--ease-out);
     }
 
-    /* Scrollbar */
+    /* Custom Luxury Scrollbar */
     ::-webkit-scrollbar {
       width: 5px;
     }
@@ -166,6 +254,19 @@
     ::-webkit-scrollbar-thumb {
       background: #D5CEBF;
       border-radius: 9999px;
+    }
+    body.theme-dark ::-webkit-scrollbar-thumb {
+      background: #2D313A;
+    }
+
+    /* Accessibility: Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
     }
   </style>
 </head>
@@ -212,18 +313,18 @@
     <!-- ========================================== -->
     <header class="px-7 pt-7 pb-3 flex justify-between items-center relative z-20">
       <!-- Top Left: Solid Black Monogram Circle -->
-      <a href="#hero" id="headerInitials" class="w-12 h-12 rounded-full bg-dark text-white font-bold text-sm flex items-center justify-center tracking-wider shadow-sm hover:scale-105 active:scale-95 transition-transform"></a>
+      <a href="#hero" id="headerInitials" class="w-11 h-11 rounded-full bg-dark text-white font-bold text-sm flex items-center justify-center tracking-wider shadow-sm hover:scale-105 active:scale-95 transition-transform border border-black/10"></a>
 
       <!-- Top Right: QR Code, Share & Menu Buttons -->
       <div class="flex items-center gap-2">
-        <button onclick="openQrModal()" title="Show QR Code" class="p-2.5 rounded-full hover:bg-black/5 text-dark transition-colors active:scale-95">
-          <i data-lucide="qr-code" class="w-5 h-5 stroke-[1.8]"></i>
+        <button onclick="openQrModal()" title="Show QR Code" class="header-action-btn w-10 h-10 rounded-full bg-black/[0.04] flex items-center justify-center text-dark active:scale-95 transition-transform border border-black/[0.05]">
+          <i data-lucide="qr-code" class="w-4 h-4 stroke-[1.8]"></i>
         </button>
-        <button onclick="shareProfile()" title="Share Card" class="p-2.5 rounded-full hover:bg-black/5 text-dark transition-colors active:scale-95">
-          <i data-lucide="share-2" class="w-5 h-5 stroke-[1.8]"></i>
+        <button onclick="shareProfile()" title="Share Card" class="header-action-btn w-10 h-10 rounded-full bg-black/[0.04] flex items-center justify-center text-dark active:scale-95 transition-transform border border-black/[0.05]">
+          <i data-lucide="share-2" class="w-4 h-4 stroke-[1.8]"></i>
         </button>
-        <button onclick="toggleNavDrawer()" title="Menu" class="p-2.5 rounded-full hover:bg-black/5 text-dark transition-colors active:scale-95">
-          <i data-lucide="menu" class="w-6 h-6 stroke-[2]"></i>
+        <button onclick="toggleNavDrawer()" title="Menu" class="header-action-btn w-10 h-10 rounded-full bg-black/[0.04] flex items-center justify-center text-dark active:scale-95 transition-transform border border-black/[0.05]">
+          <i data-lucide="menu" class="w-5 h-5 stroke-[2]"></i>
         </button>
       </div>
     </header>
@@ -234,7 +335,7 @@
     <!-- ========================================== -->
     <section id="hero" class="px-7 pt-5 pb-6 flex flex-col items-center text-center relative z-10">
       
-      <!-- Central Avatar with Metallic Bevel Ring -->
+      <!-- Central Avatar with Metallic Bevel Ring & NFC Verified Indicator -->
       <div class="relative mb-5">
         <div class="avatar-bevel-ring w-32 h-32 rounded-full flex items-center justify-center overflow-hidden">
           <!-- Inner Black Circle with Monogram -->
@@ -242,50 +343,67 @@
           <!-- Optional Photo Avatar -->
           <img id="avatarPhoto" src="" alt="Profile" class="hidden w-full h-full rounded-full object-cover shadow-inner" />
         </div>
+        <!-- Live NFC Active Verified Dot -->
+        <div class="nfc-active-dot absolute bottom-1 right-1 w-4 h-4 rounded-full bg-emerald-500 ring-4 ring-white shadow-sm flex items-center justify-center" title="Active Contactless Profile">
+          <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping opacity-75"></span>
+        </div>
       </div>
 
       <!-- Main Name -->
-      <h1 id="clientName" class="text-3xl font-extrabold tracking-tight text-dark leading-tight mb-1.5"></h1>
+      <h1 id="clientName" class="text-3xl font-extrabold tracking-[-0.03em] text-dark leading-tight mb-2"></h1>
 
-      <!-- Subtitle -->
-      <p id="clientTitle" class="text-xs font-semibold text-slate-700 tracking-wide mb-3.5"></p>
+      <!-- Executive Pill Badge for Subtitle -->
+      <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full pill-badge border border-black/[0.07] bg-black/[0.04] text-xs font-semibold text-slate-700 tracking-wide mb-3">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        <span id="clientTitle"></span>
+      </div>
 
       <!-- Value Proposition / Bio -->
-      <p id="clientBio" class="text-[13px] text-slate-600 leading-relaxed max-w-[340px] mb-5 font-normal"></p>
+      <p id="clientBio" class="text-[13px] text-slate-600 leading-relaxed max-w-[340px] mb-6 font-normal"></p>
 
-      <!-- 4 Quick Action Cards (Call, SMS, Email, Viber) -->
+      <!-- 4 Quick Action Cards (Call, SMS, Email, Viber) with Icon Wells -->
       <div class="grid grid-cols-4 gap-2.5 w-full mb-5">
         <!-- Call -->
-        <a id="btnCall" href="tel:+639194850794" class="clean-card rounded-2xl py-3.5 px-1 flex flex-col items-center justify-center group">
-          <i data-lucide="phone" class="w-5 h-5 text-dark stroke-[2] mb-1.5 group-hover:scale-110 transition-transform"></i>
+        <a id="btnCall" href="tel:+639194850794" class="clean-card rounded-2xl py-3 px-1 flex flex-col items-center justify-center group">
+          <div class="action-icon-well w-8 h-8 rounded-xl bg-black/[0.04] flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform">
+            <i data-lucide="phone" class="w-4 h-4 text-dark stroke-[2]"></i>
+          </div>
           <span class="text-xs font-semibold text-slate-800">Call</span>
         </a>
 
         <!-- SMS -->
-        <a id="btnSms" href="sms:+639194850794" class="clean-card rounded-2xl py-3.5 px-1 flex flex-col items-center justify-center group">
-          <i data-lucide="message-square" class="w-5 h-5 text-dark stroke-[2] mb-1.5 group-hover:scale-110 transition-transform"></i>
+        <a id="btnSms" href="sms:+639194850794" class="clean-card rounded-2xl py-3 px-1 flex flex-col items-center justify-center group">
+          <div class="action-icon-well w-8 h-8 rounded-xl bg-black/[0.04] flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform">
+            <i data-lucide="message-square" class="w-4 h-4 text-dark stroke-[2]"></i>
+          </div>
           <span class="text-xs font-semibold text-slate-800">SMS</span>
         </a>
 
         <!-- Email -->
-        <a id="btnEmail" href="mailto:kylesantos0411@gmail.com" class="clean-card rounded-2xl py-3.5 px-1 flex flex-col items-center justify-center group">
-          <i data-lucide="mail" class="w-5 h-5 text-dark stroke-[2] mb-1.5 group-hover:scale-110 transition-transform"></i>
+        <a id="btnEmail" href="mailto:kylesantos0411@gmail.com" class="clean-card rounded-2xl py-3 px-1 flex flex-col items-center justify-center group">
+          <div class="action-icon-well w-8 h-8 rounded-xl bg-black/[0.04] flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform">
+            <i data-lucide="mail" class="w-4 h-4 text-dark stroke-[2]"></i>
+          </div>
           <span class="text-xs font-semibold text-slate-800">Email</span>
         </a>
 
         <!-- Viber -->
-        <a id="btnViber" href="viber://chat?number=%2B639194850794" class="clean-card rounded-2xl py-3.5 px-1 flex flex-col items-center justify-center group">
-          <svg class="w-5 h-5 text-[#7360F2] fill-current mb-1.5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12.544 0C5.397 0 0 5.074 0 12.186c0 3.754 1.722 6.91 4.57 8.94-.176.81-.664 2.91-1.492 4.195-.144.225-.035.52.223.585.163.041.341.008.472-.09 2.502-1.854 4.316-3.23 4.97-3.71.93.22 1.897.338 2.871.338 7.147 0 12.544-5.073 12.544-12.258C24.088 5.074 18.69 0 12.544 0zm6.924 16.643c-.417.689-1.164 1.222-1.996 1.424-.544.133-1.636.16-3.824-.658-2.617-.98-4.908-2.846-6.685-5.328-1.285-1.794-2.072-3.882-2.153-5.467-.042-.816.208-1.58.686-2.094.39-.42.917-.655 1.483-.661.162 0 .324.032.474.095.344.146.666.864 1.054 1.78.232.546.47 1.107.696 1.543.142.274.136.592-.016.852-.108.185-.246.386-.395.6-.17.243-.324.464-.324.62 0 .114.072.338.318.736.682 1.103 1.554 2.052 2.584 2.81.442.325.753.486.917.486.11 0 .265-.102.484-.316.27-.265.57-.597.872-.757.262-.138.58-.13.834.02.436.257.994.526 1.546.793.896.435 1.597.776 1.745 1.13.064.155.093.322.086.49-.012.316-.147.625-.366.931z"/>
-          </svg>
+        <a id="btnViber" href="viber://chat?number=%2B639194850794" class="clean-card rounded-2xl py-3 px-1 flex flex-col items-center justify-center group">
+          <div class="action-icon-well w-8 h-8 rounded-xl bg-[#7360F2]/10 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform">
+            <svg class="w-4 h-4 text-[#7360F2] fill-current" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12.544 0C5.397 0 0 5.074 0 12.186c0 3.754 1.722 6.91 4.57 8.94-.176.81-.664 2.91-1.492 4.195-.144.225-.035.52.223.585.163.041.341.008.472-.09 2.502-1.854 4.316-3.23 4.97-3.71.93.22 1.897.338 2.871.338 7.147 0 12.544-5.073 12.544-12.258C24.088 5.074 18.69 0 12.544 0zm6.924 16.643c-.417.689-1.164 1.222-1.996 1.424-.544.133-1.636.16-3.824-.658-2.617-.98-4.908-2.846-6.685-5.328-1.285-1.794-2.072-3.882-2.153-5.467-.042-.816.208-1.58.686-2.094.39-.42.917-.655 1.483-.661.162 0 .324.032.474.095.344.146.666.864 1.054 1.78.232.546.47 1.107.696 1.543.142.274.136.592-.016.852-.108.185-.246.386-.395.6-.17.243-.324.464-.324.62 0 .114.072.338.318.736.682 1.103 1.554 2.052 2.584 2.81.442.325.753.486.917.486.11 0 .265-.102.484-.316.27-.265.57-.597.872-.757.262-.138.58-.13.834.02.436.257.994.526 1.546.793.896.435 1.597.776 1.745 1.13.064.155.093.322.086.49-.012.316-.147.625-.366.931z"/>
+            </svg>
+          </div>
           <span class="text-xs font-semibold text-slate-800">Viber</span>
         </a>
       </div>
 
       <!-- Quick Jump Button to Appointment Form -->
-      <a href="#appointment" class="w-full py-3.5 px-5 rounded-2xl btn-dark-pill flex items-center justify-between mb-4 group cursor-pointer">
+      <a href="#appointment" class="w-full py-3.5 px-5 rounded-2xl btn-dark-pill flex items-center justify-between mb-4 group cursor-pointer shadow-md">
         <div class="flex items-center gap-3">
-          <i data-lucide="calendar" class="w-5 h-5 text-white stroke-[2]"></i>
+          <div class="w-7 h-7 rounded-lg bg-white/15 flex items-center justify-center">
+            <i data-lucide="calendar" class="w-4 h-4 text-white stroke-[2]"></i>
+          </div>
           <span class="text-sm font-semibold tracking-wide">Request an Appointment</span>
         </div>
         <i data-lucide="arrow-down" class="w-4 h-4 text-white group-hover:translate-y-0.5 transition-transform"></i>
@@ -1678,6 +1796,17 @@
     // APPOINTMENT REQUEST DISPATCH (Direct Free Email)
     // Delivers directly to activeClient.email!
     // ----------------------------------------------------
+    // Keyboard Navigation (Apple HIG standard: Escape closes open overlays)
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeQrModal();
+        closePinModal();
+        closeCustomizerDrawer();
+        const nav = document.getElementById("navDrawer");
+        if (nav && !nav.classList.contains("hidden")) toggleNavDrawer();
+      }
+    });
+
     async function handleAppointment(e) {
       e.preventDefault();
       const submitBtn = document.getElementById("appointmentSubmitBtn");
