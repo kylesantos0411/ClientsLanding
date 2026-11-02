@@ -1,8 +1,29 @@
 {
-  "routes": [
-    { "src": "^/?$", "dest": "/admin.html" },
-    { "src": "^/admin/?$", "dest": "/admin.html" },
-    { "handle": "filesystem" },
-    { "src": "^/(.*)$", "dest": "/index.html" }
+  "redirects": [
+    {
+      "source": "/admin",
+      "destination": "https://appearoph.online/admin",
+      "permanent": true
+    },
+    {
+      "source": "/c/:slug*",
+      "destination": "https://appearoph.online/c/:slug*",
+      "permanent": true
+    },
+    {
+      "source": "/card/:slug*",
+      "destination": "https://appearoph.online/c/:slug*",
+      "permanent": true
+    },
+    {
+      "source": "/:slug",
+      "destination": "https://appearoph.online/c/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "destination": "https://appearoph.online",
+      "permanent": true
+    }
   ]
 }
